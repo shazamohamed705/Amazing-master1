@@ -1,0 +1,295 @@
+/* Stats section base state (before scroll into view) */
+.stats { 
+  background: #1F1F2C; 
+  padding: 3rem 0; 
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+}
+
+/* When section becomes visible (triggered by IntersectionObserver in React) */
+.stats--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.stats__container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 1rem; 
+}
+
+.stats__title { 
+  text-align: center; 
+  color: #F7EC06; 
+  font-size: 30px; 
+  font-weight: 900; 
+  margin: 0; 
+}
+
+.stats__divider { 
+  width: 70px; 
+  height: 4px; 
+  background: #F7EC06; /* خط أصفر واضح */
+  margin: .75rem auto 2rem; 
+  border-radius: 999px; 
+  position: relative;
+}
+
+/* كرة صغيرة تتحرك على الخط (نفس فكرة الكورة في قسم خدماتنا) */
+.stats__divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #F7EC06;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(247, 236, 6, 0.6);
+  animation: stats-divider-ball 2.2s ease-in-out infinite;
+}
+
+.stats__grid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 2rem; 
+  text-align: center; 
+}
+
+.stats__item {
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.stats__num { 
+  color: #F7EC06; 
+  font-weight: 600;  /* أرفع من 900 */
+  font-size: 2.8rem; /* أكبر من 2.25rem */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make span a block so it can rotate smoothly */
+.stats__num span {
+  display: inline-block;
+}
+
+.stats__num--animating { 
+  transition: none;
+  display: inline-block;
+}
+
+.stats__num--stable { 
+  transition: all 0.3s ease-out;
+  display: inline-block;
+}
+
+/* Rotate number like a wheel on first touch/hover (numbers only, layout unchanged) */
+.stats__num:hover span {
+  animation: stats-num-spin 0.5s ease-out;
+}
+
+.stats__label { 
+  color: #E5E7EB;  /* أبيض فاتح */
+  margin-top: .5rem; 
+  line-height: 1.7; 
+  font-size: 1rem;
+  font-weight: 600; /* Bold خفيف */
+}
+
+@keyframes stats-num-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* حركة الكرة على الخط تحت العنوان */
+@keyframes stats-divider-ball {
+  0% {
+    left: 0%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px){
+  .stats {
+    padding: 2.5rem 0;
+  }
+
+  .stats__container {
+    padding: 0 1.5rem;
+  }
+
+  .stats__title {
+    font-size: 1.8rem;
+  }
+
+  .stats__divider {
+    width: 65px;
+    height: 3.5px;
+    margin: 0.7rem auto 1.8rem;
+  }
+
+  .stats__grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.5rem; 
+  }
+
+  .stats__item {
+    padding: 0.8rem;
+  }
+
+  .stats__num {
+    font-size: 2.4rem; /* أكبر مع الحفاظ على التناسب على الشاشات المتوسطة */
+  }
+
+  .stats__label {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px){
+  .stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 2rem 0;
+    box-sizing: border-box;
+  }
+
+  .stats__container {
+    padding: 0 1rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stats__title {
+    font-size: 1.6rem;
+  }
+
+  .stats__divider {
+    width: 60px;
+    height: 3px;
+    margin: 0.6rem auto 1.6rem;
+  }
+
+  .stats__grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.2rem; 
+  }
+
+  .stats__item {
+    padding: 0.7rem;
+    border-radius: 10px;
+  }
+
+  .stats__num {
+    font-size: 2rem; /* تكبير بسيط على الموبايل مع بقاءه أنحف */
+  }
+
+  .stats__label {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 520px){
+  .stats {
+    padding: 1.8rem 0;
+  }
+
+  .stats__container {
+    padding: 0 0.8rem;
+  }
+
+  .stats__title {
+    font-size: 1.4rem;
+  }
+
+  .stats__divider {
+    width: 55px;
+    height: 3px;
+    margin: 0.5rem auto 1.4rem;
+  }
+
+  .stats__grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem;
+  }
+
+  .stats__item {
+    padding: 0.8rem 0.6rem;
+    border-radius: 10px;
+  }
+
+  .stats__num {
+    font-size: 1.9rem;
+  }
+
+  .stats__label {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 360px){
+  .stats {
+    padding: 1.5rem 0;
+  }
+
+  .stats__container {
+    padding: 0 0.6rem;
+  }
+
+  .stats__title {
+    font-size: 1.3rem;
+  }
+
+  .stats__divider {
+    width: 50px;
+    height: 2.5px;
+    margin: 0.4rem auto 1.2rem;
+  }
+
+  .stats__grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 0.8rem;
+  }
+
+  .stats__item {
+    padding: 0.9rem 0.7rem;
+    border-radius: 10px;
+  }
+
+  .stats__num {
+    font-size: 1.7rem;
+  }
+
+  .stats__label {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
+

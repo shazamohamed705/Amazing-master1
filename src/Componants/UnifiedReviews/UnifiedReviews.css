@@ -1,0 +1,369 @@
+/* Unified Reviews Styles */
+.unified-reviews {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #3a3a4a;
+  background: transparent;
+}
+
+.unified-reviews__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.unified-reviews__header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.unified-reviews__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  position: relative;
+  padding-right: 1rem;
+}
+
+.unified-reviews__title::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 30px;
+  background: #F7EC06;
+  border-radius: 2px;
+}
+
+/* Desktop Reviews */
+.unified-reviews__desktop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.unified-reviews__slider-btn {
+  background: #2a2a3a;
+  border: 1px solid #3a3a4a;
+  color: #ffffff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.unified-reviews__slider-btn:hover {
+  background: #F7EC06;
+  color: #1F1F2C;
+  border-color: #F7EC06;
+}
+
+.unified-reviews__slider {
+  flex: 1;
+  overflow: hidden;
+}
+
+.unified-reviews__track {
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.unified-reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.unified-reviews__card {
+  background: #2a2a3a;
+  border: 1px solid #3a3a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  will-change: transform, box-shadow;
+  contain: layout style paint;
+}
+
+.unified-reviews__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-color: #F7EC06;
+}
+
+.unified-reviews__card.active {
+  border-color: #F7EC06;
+  background: rgba(247, 236, 6, 0.05);
+}
+
+.unified-reviews__review-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.unified-reviews__star {
+  color: #666666;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.unified-reviews__star.filled {
+  color: #F7EC06;
+}
+
+.unified-reviews__rating-number {
+  color: #ffffff;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.unified-reviews__reviewer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.unified-reviews__reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  background: #3a3a4a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unified-reviews__avatar-icon {
+  font-size: 1.2rem;
+}
+
+.unified-reviews__reviewer-info {
+  flex: 1;
+}
+
+.unified-reviews__reviewer-name {
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.unified-reviews__reviewer-date {
+  color: #666666;
+  font-size: 0.8rem;
+}
+
+.unified-reviews__review-content {
+  position: relative;
+}
+
+.unified-reviews__quote-open,
+.unified-reviews__quote-close {
+  position: absolute;
+  font-size: 2rem;
+  color: #F7EC06;
+  font-weight: bold;
+  opacity: 0.3;
+}
+
+.unified-reviews__quote-open {
+  top: -0.5rem;
+  right: -0.5rem;
+}
+
+.unified-reviews__quote-close {
+  bottom: -0.5rem;
+  left: -0.5rem;
+}
+
+.unified-reviews__review-text {
+  color: #ffffff;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Mobile Reviews */
+.unified-reviews__mobile {
+  display: none;
+}
+
+.unified-reviews__mobile-slider {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.unified-reviews__mobile-track {
+  display: flex;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.unified-reviews__mobile-card {
+  min-width: 100%;
+  background: #2a2a3a;
+  border: 1px solid #3a3a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 0 0.5rem;
+}
+
+.unified-reviews__mobile-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.unified-reviews__mobile-btn {
+  background: #2a2a3a;
+  border: 1px solid #3a3a4a;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.unified-reviews__mobile-btn:hover {
+  background: #F7EC06;
+  color: #1F1F2C;
+  border-color: #F7EC06;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .unified-reviews__container {
+    padding: 0 1.5rem;
+  }
+  
+  .unified-reviews__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .unified-reviews__desktop {
+    display: none;
+  }
+  
+  .unified-reviews__mobile {
+    display: block;
+  }
+  
+  .unified-reviews__container {
+    padding: 0 1rem;
+  }
+  
+  .unified-reviews__title {
+    font-size: 1.3rem;
+  }
+  
+  .unified-reviews__title::before {
+    width: 3px;
+    height: 25px;
+  }
+
+  /* Compact variant - used in SnapchatCapture only */
+  .unified-reviews--compact .unified-reviews__mobile-card {
+    background: #1f1f2c;
+    border-color: #444;
+    padding: 1.1rem;
+  }
+  .unified-reviews--compact .unified-reviews__mobile-controls {
+    justify-content: space-between;
+    padding: 0 0.25rem;
+  }
+  .unified-reviews--compact .unified-reviews__mobile-btn {
+    background: #141420;
+    border-color: #444;
+  }
+}
+
+@media (max-width: 480px) {
+  .unified-reviews__container {
+    padding: 0 0.75rem;
+  }
+  
+  .unified-reviews__mobile-card {
+    padding: 1rem;
+    margin: 0 0.25rem;
+  }
+  
+  .unified-reviews__title {
+    font-size: 1.2rem;
+  }
+  
+  .unified-reviews__review-rating {
+    margin-bottom: 0.8rem;
+  }
+  
+  .unified-reviews__reviewer-avatar {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .unified-reviews__avatar-icon {
+    font-size: 1rem;
+  }
+  
+  .unified-reviews__reviewer-name {
+    font-size: 0.9rem;
+  }
+  
+  .unified-reviews__reviewer-date {
+    font-size: 0.75rem;
+  }
+  
+  .unified-reviews__review-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  .unified-reviews__quote-open,
+  .unified-reviews__quote-close {
+    font-size: 1.5rem;
+  }
+  
+  .unified-reviews__mobile-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .unified-reviews__container {
+    padding: 0 0.5rem;
+  }
+  
+  .unified-reviews__mobile-card {
+    padding: 0.8rem;
+  }
+  
+  .unified-reviews__title {
+    font-size: 1.1rem;
+  }
+  
+  .unified-reviews__review-text {
+    font-size: 0.8rem;
+  }
+}

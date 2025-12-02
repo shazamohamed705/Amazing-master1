@@ -1,0 +1,246 @@
+/* Contact bar base state (before scroll into view) */
+.contact-bar {
+  background: #1f1f2c;
+  padding: 1.5rem 0;
+  margin: 3rem 0;
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+}
+
+/* When section becomes visible (triggered by IntersectionObserver) */
+.contact-bar--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.contact-bar__container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: #1E2960;
+  border-radius: 50px;
+  box-shadow: 0 8px 30px rgba(30, 41, 96, 0.3);
+}
+
+.contact-bar__social {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  order: 2;
+}
+
+.contact-bar__icon {
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.contact-bar__icon:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-3px);
+}
+
+.contact-bar__title {
+  text-align: right;
+  color: #40A9E9;
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0;
+  order: 1;
+}
+
+.contact-bar__button {
+  background: #40A9E9;
+  color: #ffffff;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(64, 169, 233, 0.3);
+  white-space: nowrap;
+  order: 3;
+}
+
+.contact-bar__button:hover {
+  background: #1E2960;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 41, 96, 0.5);
+}
+
+.contact-bar__button svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 992px) {
+  .contact-bar {
+    padding: 1.2rem 0;
+    margin: 2.5rem 0;
+  }
+
+  .contact-bar__container {
+    max-width: 700px;
+    padding: 1rem 1.5rem;
+    gap: 1.5rem;
+    border-radius: 40px;
+  }
+
+  .contact-bar__title {
+    font-size: 1.25rem;
+  }
+
+  .contact-bar__button {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.5rem;
+  }
+
+  .contact-bar__icon {
+    width: 33px;
+    height: 33px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-bar {
+    padding: 1rem 0;
+    margin: 2rem 0;
+  }
+
+  .contact-bar__container {
+    max-width: 95%;
+    padding: 1.2rem 1.5rem;
+    gap: 1.2rem;
+    flex-direction: column;
+    border-radius: 25px;
+  }
+
+  .contact-bar__title {
+    font-size: 1.15rem;
+    width: 100%;
+    order: 1;
+    text-align: center;
+  }
+
+  .contact-bar__button {
+    order: 2;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.5rem;
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+
+  .contact-bar__social {
+    order: 3;
+    gap: 0.8rem;
+  }
+
+  .contact-bar__icon {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-bar {
+    padding: 0.8rem 0;
+    margin: 1.5rem 0;
+  }
+
+  .contact-bar__container {
+    max-width: 95%;
+    padding: 1rem 1.2rem;
+    gap: 1rem;
+    border-radius: 20px;
+  }
+
+  .contact-bar__title {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .contact-bar__button {
+    font-size: 0.88rem;
+    padding: 0.65rem 1.2rem;
+    max-width: 100%;
+    gap: 0.4rem;
+  }
+
+  .contact-bar__button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .contact-bar__social {
+    gap: 0.6rem;
+  }
+
+  .contact-bar__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+  }
+
+  .contact-bar__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .contact-bar {
+    padding: 0.6rem 0;
+    margin: 1.2rem 0;
+  }
+
+  .contact-bar__container {
+    padding: 0.9rem 1rem;
+    gap: 0.8rem;
+    border-radius: 18px;
+  }
+
+  .contact-bar__title {
+    font-size: 0.95rem;
+  }
+
+  .contact-bar__button {
+    font-size: 0.82rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .contact-bar__button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .contact-bar__social {
+    gap: 0.5rem;
+  }
+
+  .contact-bar__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .contact-bar__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}

@@ -1,0 +1,147 @@
+.page-section {
+  min-height: 100vh;
+  background: #1f1f2c;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-hero {
+  width: 100%;
+  padding: 4rem 1.5rem;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.page-hero__content {
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+  color: #fff;
+}
+
+.page-hero__eyebrow {
+  color: #f7ec06;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.page-hero__title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 800;
+  margin: 0 0 1rem;
+}
+
+.page-hero__subtitle {
+  color: #c1c4d6;
+  font-size: 1rem;
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.page-container {
+  max-width: 900px;
+  width: 100%;
+  margin: -3rem auto 3rem;
+  padding: 0 1.5rem;
+}
+
+.page-card {
+  background: #141420;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.page-card--error {
+  text-align: center;
+}
+
+.page-content {
+  color: #e2e4f0;
+  font-size: 1rem;
+  line-height: 2;
+}
+
+.page-content h2,
+.page-content h3,
+.page-content h4 {
+  color: #fff;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.page-content p {
+  margin-bottom: 1rem;
+}
+
+.page-content ul,
+.page-content ol {
+  padding-right: 1.25rem;
+  margin: 1rem 0;
+}
+
+.page-content a {
+  color: #f7ec06;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(247, 236, 6, 0.4);
+}
+
+.page-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+}
+
+.page-updated {
+  margin-top: 2rem;
+  color: #9ea3c3;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.page-status {
+  color: #fff;
+  margin: 0 0 1rem;
+}
+
+.page-status--error {
+  color: #ff6b6b;
+}
+
+.page-btn {
+  background: #f7ec06;
+  color: #1f1f2c;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(247, 236, 6, 0.25);
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    margin-top: -2.5rem;
+    padding: 0 1rem;
+  }
+
+  .page-card {
+    padding: 1.75rem;
+  }
+
+  .page-content {
+    font-size: 0.95rem;
+  }
+}
+

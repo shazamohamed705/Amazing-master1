@@ -1,0 +1,1246 @@
+/* AccountsForSale Styles */
+.accounts-for-sale {
+  background-color: #1F1F2C !important;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  position: relative;
+  left: 0;
+  right: 0;
+}
+
+.accounts-for-sale__container {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 20px !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  position: relative;
+}
+
+/* Main Content */
+.accounts-for-sale__main {
+  padding: 2rem 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  position: relative;
+}
+
+.accounts-for-sale__sub-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.accounts-for-sale__dropdown-container {
+  position: relative;
+}
+
+.accounts-for-sale__sort-btn {
+  background: none;
+  border: none;
+  color: #666666;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.accounts-for-sale__sort-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.accounts-for-sale__dropdown-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.accounts-for-sale__dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1F1F2C;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 0.5rem;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.accounts-for-sale__dropdown-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.8rem 1rem;
+  color: #ffffff !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: right;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.accounts-for-sale__dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.accounts-for-sale__dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding-right: 1.5rem;
+}
+
+.accounts-for-sale__dropdown-item.selected {
+  background: rgba(247, 236, 6, 0.15);
+  color: #F7EC06;
+  font-weight: 600;
+}
+
+.accounts-for-sale__dropdown-item.selected::after {
+  content: '✓';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #F7EC06;
+  font-weight: bold;
+}
+
+.accounts-for-sale__counter {
+  display: flex;
+  align-items: center;
+}
+
+.accounts-for-sale__counter-text {
+  color: #666666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.accounts-for-sale__counter-text:hover {
+  color: #ffffff;
+}
+
+.accounts-for-sale__products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+  gap: 1.5rem;
+  margin-top: 3rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Product Card */
+.accounts-for-sale__product-card {
+  background: #343444;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  width: 287px;
+  height: 539px;
+}
+
+.accounts-for-sale__product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(247, 236, 6, 0.2);
+}
+
+.accounts-for-sale__product-header {
+  background: #343444;
+  padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.accounts-for-sale__product-logo {
+  display: none;
+}
+
+.accounts-for-sale__product-logo-letter {
+  display: none;
+}
+
+.accounts-for-sale__category-icon {
+  display: none;
+}
+
+.accounts-for-sale__product-line {
+  display: none;
+}
+
+.accounts-for-sale__product-subtitle {
+  display: none;
+}
+
+.accounts-for-sale__star {
+  display: none;
+}
+
+.accounts-for-sale__badge {
+  display: none;
+}
+
+.accounts-for-sale__product-image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
+
+.accounts-for-sale__main-image {
+  width: 237px;
+  height: 231px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+  border: 4px solid #ffffff;
+}
+
+.accounts-for-sale__main-image:hover {
+  transform: none;
+}
+
+.accounts-for-sale__product-content {
+  padding: 1.5rem;
+  background: #343444 !important;
+}
+
+.accounts-for-sale__product-title {
+  color: #ffffff !important;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 0.8rem 0;
+  text-align: right;
+}
+
+.accounts-for-sale__product-price {
+  color: #ffffff !important;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0 0 1.5rem 0;
+  text-align: right;
+}
+
+.accounts-for-sale__product-price--discounted {
+  color: #E02424 !important;
+}
+
+/* Discount Section Styles */
+.accounts-for-sale__pricing {
+  margin-bottom: 1rem;
+}
+
+.accounts-for-sale__discount-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.accounts-for-sale__discount-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+}
+
+.accounts-for-sale__discount-badge {
+  background: #F7EC06;
+  color: #ffffff !important;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.accounts-for-sale__savings {
+  color: #7ED3B3;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.accounts-for-sale__price-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.accounts-for-sale__original-price {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.accounts-for-sale__product-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.accounts-for-sale__favorite-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+.accounts-for-sale__favorite-btn:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.accounts-for-sale__add-to-cart {
+  background: #2a2a3a !important;
+  color: #F7EC06 !important;
+  border: 2px solid #F7EC06 !important;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  justify-content: center;
+  box-shadow: none !important;
+  font-size: 0.9rem;
+}
+
+.accounts-for-sale__add-to-cart:hover {
+  background: #ffffff !important;
+  color: #2a2a2a !important;
+  transform: translateY(-2px);
+  border-color: #ffffff !important;
+}
+
+.accounts-for-sale__cart-icon {
+  font-size: 0.9rem;
+}
+
+/* Reviews Section */
+.accounts-for-sale__reviews {
+  margin-top: 4rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.accounts-for-sale__reviews-header {
+  margin-bottom: 2rem;
+  padding: 0 2rem;
+}
+
+.accounts-for-sale__reviews-title {
+  color: #F7EC06;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0;
+  position: relative;
+  padding-right: 1rem;
+  text-align: right;
+}
+
+.accounts-for-sale__reviews-title::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 30px;
+  background: #F7EC06;
+  border-radius: 2px;
+}
+
+.accounts-for-sale__reviews-container {
+  position: relative;
+  padding: 0 2rem;
+}
+
+.accounts-for-sale__slider-btn {
+  position: absolute;
+  bottom: -60px;
+  background: #F7EC06;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  transform: translateX(-50%);
+}
+
+.accounts-for-sale__slider-btn:hover {
+  background: #ffffff;
+  color: #2a2a2a;
+}
+
+.accounts-for-sale__slider-btn--prev {
+  left: calc(50% - 30px);
+}
+
+.accounts-for-sale__slider-btn--next {
+  left: calc(50% + 30px);
+}
+
+/* Mobile Cards Grid - Hidden on Desktop */
+.accounts-for-sale__reviews-grid--mobile {
+  display: none;
+}
+
+/* Desktop Grid - Show on Desktop */
+.accounts-for-sale__reviews-grid--desktop {
+  display: flex;
+  gap: 1.5rem;
+  min-width: 100%;
+}
+
+.accounts-for-sale__reviews-slider {
+  overflow: hidden;
+  border-radius: 15px;
+  margin-top: 2rem;
+  padding-left: 5rem;
+  position: relative;
+  touch-action: pan-x;
+}
+
+.accounts-for-sale__reviews-slider--desktop {
+  display: block;
+}
+
+.accounts-for-sale__reviews-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+}
+
+.accounts-for-sale__reviews-grid {
+  display: flex;
+  gap: 1.5rem;
+  min-width: 100%;
+}
+
+/* Mobile: Show one card at a time */
+@media (max-width: 768px) {
+  .accounts-for-sale__reviews-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .accounts-for-sale__reviews-slider {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    order: 1;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__reviews-grid {
+    gap: 0;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__review-card {
+    min-width: 100%;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .accounts-for-sale__review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__review-rating {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .accounts-for-sale__reviewer {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    flex: 1;
+  }
+  
+  .accounts-for-sale__review-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .accounts-for-sale__reviews-track {
+    width: 100%;
+  }
+  
+  .accounts-for-sale__slider-btn {
+    position: static;
+    transform: none;
+    display: inline-block;
+    margin: 0 0.5rem;
+    order: 2;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .accounts-for-sale__slider-btn--prev {
+    left: auto;
+  }
+  
+  .accounts-for-sale__slider-btn--next {
+    right: auto;
+    left: auto;
+  }
+}
+
+.accounts-for-sale__review-card {
+  background: #343444 !important;
+  border-radius: 15px;
+  padding: 1.5rem 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  border: none;
+  box-shadow: 0 4px 15px rgba(247, 236, 6, 0.1);
+  min-width: 500px;
+  max-width: 600px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accounts-for-sale__review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  flex-direction: row;
+  padding-right: 0;
+  margin-right: 0;
+  direction: ltr;
+}
+
+.accounts-for-sale__review-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  margin-right: auto;
+  direction: ltr;
+  order: 1;
+}
+
+.accounts-for-sale__rating-number {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.accounts-for-sale__star {
+  color: #FACA15 !important;
+  display: inline-block !important;
+}
+
+.accounts-for-sale__reviewer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  flex: 1;
+  justify-content: flex-end;
+  flex-direction: row;
+  margin-left: 0;
+  padding-right: 0;
+  direction: ltr;
+  order: 2;
+}
+
+.accounts-for-sale__reviewer-avatar {
+  width: 50px;
+  height: 50px;
+  background: rgba(247, 236, 6, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(247, 236, 6, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 0;
+  padding: 0;
+}
+
+.accounts-for-sale__reviewer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.accounts-for-sale__avatar-icon {
+  font-size: 1.5rem;
+  color: #F7EC06;
+}
+
+.accounts-for-sale__reviewer-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  direction: ltr;
+}
+
+.accounts-for-sale__reviewer-name {
+  color: #ffffff !important;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 0.2rem 0;
+}
+
+.accounts-for-sale__reviewer-date {
+  color: #ffffff !important;
+  font-size: 0.9rem;
+}
+
+.accounts-for-sale__review-content {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.accounts-for-sale__quote-open {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  font-size: 2rem;
+  color: #F7EC06;
+  font-family: serif;
+  line-height: 1;
+  opacity: 0.3;
+}
+
+.accounts-for-sale__quote-close {
+  position: absolute;
+  top: 15px;
+  left: 5px;
+  font-size: 2rem;
+  color: #F7EC06;
+  font-family: serif;
+  line-height: 1;
+  opacity: 0.3;
+}
+
+.accounts-for-sale__review-text {
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: right;
+  padding: 0.5rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .accounts-for-sale__container {
+    padding: 0 15px;
+  }
+
+  .accounts-for-sale__sub-nav {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    padding: 0.8rem 0;
+  }
+  
+  .accounts-for-sale__sort-btn {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .accounts-for-sale__dropdown-menu {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .accounts-for-sale__counter {
+    align-self: center;
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem;
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: 8px;
+  }
+
+  .accounts-for-sale__counter-text {
+    font-size: 0.85rem;
+  }
+  
+  .accounts-for-sale__products {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .accounts-for-sale__main {
+    padding: 1.5rem 0;
+  }
+
+  .accounts-for-sale__products {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: 2rem auto 0;
+  }
+
+  .accounts-for-sale__product-card {
+    width: 100%;
+    border-radius: 12px;
+  }
+  
+  .accounts-for-sale__product-header {
+    padding: 1.5rem 1.2rem;
+    min-height: 220px;
+  }
+  
+  .accounts-for-sale__category-icon {
+    font-size: 2rem;
+  }
+  
+  .accounts-for-sale__product-content {
+    padding: 1.5rem;
+  }
+
+  .accounts-for-sale__product-title {
+    font-size: 1.05rem;
+  }
+
+  .accounts-for-sale__product-price {
+    font-size: 1.2rem;
+  }
+
+  .accounts-for-sale__product-price--discounted {
+    color: #E02424 !important;
+  }
+
+  .accounts-for-sale__discount-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .accounts-for-sale__savings {
+    font-size: 0.75rem;
+  }
+  
+  .accounts-for-sale__product-actions {
+    flex-direction: row;
+    gap: 0.8rem;
+    align-items: stretch;
+  }
+
+  .accounts-for-sale__favorite-btn {
+    order: 1;
+    flex-shrink: 0;
+  }
+  
+  .accounts-for-sale__add-to-cart {
+    order: 2;
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 0.7rem 1rem;
+  }
+
+  .accounts-for-sale__contact-btn {
+    order: 3;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    padding: 0.7rem 0.9rem;
+  }
+  
+  .accounts-for-sale__reviews {
+    margin-top: 3rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+
+  .accounts-for-sale__reviews-header {
+    padding: 0 1rem;
+  }
+  
+  .accounts-for-sale__reviews-title {
+    font-size: 1.6rem;
+  }
+
+  .accounts-for-sale__reviews-container {
+    padding: 0 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .accounts-for-sale__reviews-slider {
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    order: 1;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__reviews-grid {
+    gap: 0;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__review-card {
+    min-width: 100%;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .accounts-for-sale__review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__review-rating {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .accounts-for-sale__reviewer {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    flex: 1;
+  }
+  
+  .accounts-for-sale__review-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .accounts-for-sale__reviews-track {
+    width: 100%;
+  }
+  
+  .accounts-for-sale__slider-btn {
+    position: static;
+    transform: none;
+    display: inline-block;
+    margin: 0 0.5rem;
+    order: 2;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .accounts-for-sale__slider-btn--prev {
+    left: auto;
+  }
+  
+  .accounts-for-sale__slider-btn--next {
+    right: auto;
+    left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .accounts-for-sale {
+    padding-top: 0.5rem;
+  }
+
+  .accounts-for-sale__container {
+    padding: 0 10px;
+  }
+
+  .accounts-for-sale__main {
+    padding: 1rem 0;
+  }
+
+  .accounts-for-sale__sub-nav {
+    padding: 0.6rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .accounts-for-sale__sort-btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .accounts-for-sale__dropdown-item {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .accounts-for-sale__counter-text {
+    font-size: 0.8rem;
+  }
+  
+  .accounts-for-sale__products {
+    max-width: 100%;
+    margin-top: 1.5rem;
+    gap: 1.2rem;
+  }
+
+  .accounts-for-sale__product-card {
+    border-radius: 15px;
+  }
+  
+  .accounts-for-sale__product-header {
+    padding: 1.2rem 1rem;
+    min-height: 120px;
+  }
+
+  .accounts-for-sale__product-logo {
+    width: 35px;
+    height: 35px;
+    margin-right: 0.6rem;
+  }
+
+  .accounts-for-sale__product-logo-letter {
+    font-size: 1rem;
+  }
+  
+  .accounts-for-sale__category-icon {
+    font-size: 1.8rem;
+    margin: 0 0.6rem;
+  }
+
+  .accounts-for-sale__product-line {
+    height: 25px;
+    margin: 0 0.6rem;
+  }
+
+  .accounts-for-sale__product-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .accounts-for-sale__star {
+    font-size: 1rem;
+    top: 6px;
+    right: 10px;
+  }
+
+  .accounts-for-sale__badge {
+    font-size: 0.65rem;
+    top: 10px;
+    left: 10px;
+    padding: 0.15rem 0.4rem;
+  }
+  
+  .accounts-for-sale__product-content {
+    padding: 1.2rem;
+  }
+  
+  .accounts-for-sale__product-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+  }
+  
+  .accounts-for-sale__product-price {
+    font-size: 1.15rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .accounts-for-sale__product-price--discounted {
+    color: #E02424 !important;
+  }
+
+  .accounts-for-sale__discount-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.35rem;
+  }
+
+  .accounts-for-sale__savings {
+    font-size: 0.7rem;
+  }
+
+  .accounts-for-sale__product-actions {
+    gap: 0.6rem;
+  }
+
+  .accounts-for-sale__favorite-btn {
+    font-size: 1.2rem;
+    padding: 0.3rem;
+  }
+
+  .accounts-for-sale__add-to-cart {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 15px;
+  }
+
+  .accounts-for-sale__cart-icon {
+    font-size: 0.85rem;
+  }
+
+  .accounts-for-sale__contact-btn {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 15px;
+  }
+  
+  .accounts-for-sale__reviews {
+    margin-top: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+
+  .accounts-for-sale__reviews-header {
+    padding: 0 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .accounts-for-sale__reviews-title {
+    font-size: 1.4rem;
+    padding-right: 0.8rem;
+  }
+
+  .accounts-for-sale__reviews-title::before {
+    width: 3px;
+    height: 25px;
+  }
+
+  .accounts-for-sale__reviews-container {
+    padding: 0 0.8rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .accounts-for-sale__reviews-slider {
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    order: 1;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__reviews-grid {
+    gap: 0;
+    width: 100%;
+  }
+
+  .accounts-for-sale__review-card {
+    padding: 1.2rem;
+    border-radius: 12px;
+    width: 100%;
+    min-width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .accounts-for-sale__review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: 100%;
+  }
+  
+  .accounts-for-sale__reviews-track {
+    width: 100%;
+  }
+
+  .accounts-for-sale__review-rating {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .accounts-for-sale__reviewer {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    flex: 1;
+  }
+  
+  .accounts-for-sale__review-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .accounts-for-sale__reviewer-avatar {
+    width: 45px;
+    height: 45px;
+  }
+
+  .accounts-for-sale__avatar-icon {
+    font-size: 1.3rem;
+  }
+  
+  .accounts-for-sale__reviewer-name {
+    font-size: 0.9rem;
+  }
+  
+  .accounts-for-sale__reviewer-date {
+    font-size: 0.75rem;
+  }
+  
+  .accounts-for-sale__slider-btn {
+    position: static;
+    transform: none;
+    display: inline-block;
+    margin: 0 0.5rem;
+    order: 2;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .accounts-for-sale__slider-btn--prev {
+    left: auto;
+  }
+
+  .accounts-for-sale__slider-btn--next {
+    right: auto;
+    left: auto;
+  }
+
+  .accounts-for-sale__review-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 0.8rem 0;
+  }
+  
+  .accounts-for-sale__quote-open,
+  .accounts-for-sale__quote-close {
+    font-size: 2rem;
+  }
+
+  .accounts-for-sale__quote-open {
+    top: -8px;
+    left: 8px;
+  }
+
+  .accounts-for-sale__quote-close {
+    bottom: -15px;
+    left: 8px;
+  }
+}
+
+/* Force center alignment - Override any conflicting styles */
+body .accounts-for-sale,
+html .accounts-for-sale {
+  margin: 0 auto !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.accounts-for-sale * {
+  box-sizing: border-box;
+}
+
+/* Ensure parent container doesn't affect centering */
+.App-main .accounts-for-sale,
+section .accounts-for-sale {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}

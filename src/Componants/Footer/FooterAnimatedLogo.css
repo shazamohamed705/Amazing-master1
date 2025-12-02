@@ -1,0 +1,78 @@
+.storage-footer-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  padding: 8px;
+  border-radius: 999px;
+  isolation: isolate;
+  overflow: visible;
+  animation: storage-footer-logo-bob 7s ease-in-out infinite;
+}
+
+.storage-footer-logo::before,
+.storage-footer-logo::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.storage-footer-logo::before {
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    #2bd9ff 0%,
+    rgba(43, 217, 255, 0.1) 30%,
+    rgba(43, 217, 255, 0.22) 65%,
+    #4f7bff 100%
+  );
+  animation: storage-footer-logo-ring 8.5s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(79, 123, 255, 0.45));
+  z-index: -2;
+}
+
+.storage-footer-logo::after {
+  inset: 7px;
+  background: rgba(20, 20, 32, 0.94);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+.storage-footer-logo__image {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  border: 1px solid rgba(79, 123, 255, 0.35);
+  box-shadow: 0 5px 18px rgba(26, 64, 147, 0.4);
+}
+
+.storage-footer-logo--lg {
+  width: 96px;
+  height: 96px;
+}
+
+@keyframes storage-footer-logo-ring {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes storage-footer-logo-bob {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  45% {
+    transform: translateX(6px);
+  }
+  65% {
+    transform: translateX(10px);
+  }
+}
+

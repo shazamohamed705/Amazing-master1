@@ -1,0 +1,786 @@
+.design-slider { 
+  padding: 4rem 0; 
+  background: #1f1f2c; 
+}
+
+.design-slider__container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 2rem; 
+}
+
+.design-slider__header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.design-slider__title { 
+  text-align: center; 
+  font-size: 30px; 
+  font-weight: 900; 
+  color: #ffffff; 
+  margin: 0 0 0.75rem; 
+  position: relative;
+  padding-bottom: 0;
+}
+
+.design-slider__title::after {
+  content: none;
+}
+
+.design-slider__underline {
+  width: 150px;
+  height: 5px;
+  background: #F7EC06;
+  margin: 0 auto;
+  border-radius: 999px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(247, 236, 6, 0.3);
+}
+
+.design-slider__underline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #F7EC06;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(247, 236, 6, 0.6);
+  animation: design-slider-underline-ball 2.2s ease-in-out infinite;
+}
+
+@keyframes design-slider-underline-ball {
+  0% {
+    left: 0%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+
+.design-slider__wrapper { 
+  overflow: hidden;
+  position: relative;
+}
+
+/* Controls */
+.design-slider__controls { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 1rem; 
+  margin-top: 2rem; 
+}
+
+.design-slider__arrow { 
+  background: none;
+  color: #ffffff; /* arrows white */
+  border: none; 
+  width: 45px; 
+  height: 45px; 
+  cursor: pointer; 
+  display: grid; 
+  place-items: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.design-slider__arrow:hover { 
+  color: #ffffff; /* keep white on hover */
+  transform: scale(1.15);
+}
+
+.design-slider__arrow:active {
+  transform: scale(0.95);
+}
+
+.design-slider__dots { 
+  display: flex; 
+  gap: 0.6rem; 
+}
+
+.design-slider__dot { 
+  width: 10px; 
+  height: 10px; 
+  border-radius: 50%; 
+  border: 2px solid #ffffff; /* white instead of orange */
+  background: transparent; 
+  cursor: pointer; 
+  opacity: .7;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.design-slider__dot:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+.design-slider__dot.is-active { 
+  background: #ffffff; /* active dot white */
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.design-slider__track { 
+  display: grid; 
+  grid-auto-flow: column; 
+  grid-auto-columns: calc((100% - 3 * 1.5rem) / 4); 
+  gap: 1.5rem; 
+  transition: transform .45s cubic-bezier(.4,0,.2,1); 
+  /* removed equal heights to restore original */
+  padding: 0 2rem;
+}
+
+.design-slider__card {
+  background: #343444 !important;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(247, 236, 6, 0.2);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.design-slider__card:hover {
+  box-shadow: 0 10px 40px rgba(247, 236, 6, 0.2);
+  transform: translateY(-8px);
+  border-color: rgba(247, 236, 6, 0.4);
+}
+
+.design-slider__header {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.design-slider__header-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+
+
+
+
+
+
+
+.design-slider__content {
+  padding: 1.5rem;
+  background: #343444 !important;
+  border-radius: 0 0 16px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.design-slider__image {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  padding: 2.5rem;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.design-slider__image::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.design-slider__card:hover .design-slider__image {
+  transform: scale(1.05);
+}
+
+.design-slider__image img {
+  width: 60%;
+  height: 120px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  position: relative;
+  z-index: 1;
+}
+
+.design-slider__content {
+  padding: 1.5rem;
+  background: #fff;
+}
+
+.design-slider__description {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  min-height: 50px;
+}
+
+.design-slider__pricing {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.design-slider__price {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.design-slider__price--discounted {
+  color: #E02424;
+}
+
+/* Discount Section Styles */
+.design-slider__discount-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.design-slider__discount-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+}
+
+.design-slider__discount-badge {
+  background: #F7EC06;
+  color: #000000;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.design-slider__savings {
+  color: #7ED3B3;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.design-slider__price-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.design-slider__original-price {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.design-slider__price-unit {
+  font-size: 1rem;
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.design-slider__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.design-slider__favorite-btn {
+  background: transparent;
+  border: 2px solid #F7EC06;
+  color: #F7EC06;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.4rem;
+}
+
+.design-slider__favorite-btn:hover {
+  background: #ffffff;
+  color: #343444;
+}
+
+.design-slider__add-to-cart {
+  background: transparent;
+  border: 2px solid #F7EC06;
+  color: #ffffff;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.design-slider__add-to-cart svg {
+  font-size: 1.1rem;
+}
+
+.design-slider__add-to-cart:hover {
+  background: #ffffff;
+  color: #343444;
+}
+
+.design-slider__subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.design-slider__pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.design-slider__price-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+  .design-slider__price {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .design-slider__price--discounted {
+    color: #E02424;
+  }
+
+.design-slider__old-price {
+  font-size: 1rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.design-slider__saved {
+  font-size: 0.9rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px){
+  .design-slider { 
+    padding: 3.5rem 0; 
+  }
+
+  .design-slider__container {
+    padding: 0 1.5rem;
+  }
+
+  .design-slider__title {
+    font-size: 1.8rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .design-slider__controls {
+    margin-top: 1.8rem;
+  }
+
+  .design-slider__arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 1.4rem;
+  }
+
+  .design-slider__track { 
+    grid-auto-columns: calc((100% - 2 * 1.25rem) / 3); 
+    gap: 1.25rem; 
+  }
+
+  .design-slider__card {
+    border-radius: 14px;
+  }
+
+  .design-slider__header {
+    min-height: 250px;
+  }
+
+  .design-slider__image {
+    padding: 2rem;
+    min-height: 180px;
+  }
+
+  .design-slider__image img {
+    height: 110px;
+  }
+}
+
+@media (max-width: 768px){
+  .design-slider { 
+    padding: 3rem 0; 
+  }
+
+  .design-slider__container {
+    padding: 0 1rem;
+  }
+
+  .design-slider__title {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .design-slider__title::after {
+    width: 60px;
+    height: 3px;
+  }
+
+  .design-slider__controls {
+    margin-top: 1.6rem;
+    gap: 0.9rem;
+  }
+
+  .design-slider__arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 1.4rem;
+  }
+
+  .design-slider__dots {
+    gap: 0.55rem;
+  }
+
+  .design-slider__dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .design-slider__track { 
+    grid-auto-columns: 85%; 
+    gap: 1rem; 
+  }
+
+  .design-slider__card {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .design-slider__card {
+    border-radius: 12px;
+  }
+
+  .design-slider__header {
+    min-height: 220px;
+  }
+
+  .design-slider__image {
+    padding: 1.8rem;
+    min-height: 160px;
+  }
+
+  .design-slider__image img {
+    height: 100px;
+  }
+
+  .design-slider__content {
+    padding: 1.3rem;
+  }
+
+  .design-slider__name {
+    font-size: 1.05rem;
+    min-height: 45px;
+  }
+
+  .design-slider__subtitle {
+    font-size: 0.88rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .design-slider__price {
+    font-size: 1.4rem;
+    color: #ffffff;
+  }
+
+  .design-slider__price--discounted {
+    color: #E02424;
+  }
+
+  .design-slider__old-price {
+    font-size: 0.95rem;
+  }
+
+  .design-slider__saved {
+    font-size: 0.85rem;
+  }
+
+  .design-slider__discount-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .design-slider__savings {
+    font-size: 0.75rem;
+    color: #7ED3B3;
+  }
+
+  .design-slider__original-price {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px){
+  .design-slider { 
+    padding: 2.5rem 0; 
+  }
+
+  .design-slider__container {
+    padding: 0 0.8rem;
+  }
+
+  .design-slider__title {
+    font-size: 1.4rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .design-slider__title::after {
+    width: 50px;
+    height: 3px;
+  }
+
+  .design-slider__controls {
+    margin-top: 1.5rem;
+    gap: 0.8rem;
+  }
+
+  .design-slider__arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+
+  .design-slider__dots {
+    gap: 0.5rem;
+  }
+
+  .design-slider__dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .design-slider__track { 
+    grid-auto-columns: 90%; 
+    gap: 1rem; 
+  }
+
+  .design-slider__card {
+    border-radius: 10px;
+  }
+
+  .design-slider__header {
+    min-height: 200px;
+  }
+
+  .design-slider__image {
+    padding: 1.5rem;
+    min-height: 140px;
+  }
+
+  .design-slider__image img {
+    height: 90px;
+  }
+
+  .design-slider__content {
+    padding: 1.2rem;
+  }
+
+  .design-slider__name {
+    font-size: 1rem;
+    min-height: 40px;
+    margin-bottom: 0.4rem;
+  }
+
+  .design-slider__subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .design-slider__pricing {
+    gap: 0.4rem;
+  }
+
+  .design-slider__price-main {
+    gap: 0.8rem;
+  }
+
+  .design-slider__price {
+    font-size: 1.3rem;
+    color: #ffffff;
+  }
+
+  .design-slider__price--discounted {
+    color: #E02424;
+  }
+
+  .design-slider__old-price {
+    font-size: 0.9rem;
+  }
+
+  .design-slider__saved {
+    font-size: 0.82rem;
+  }
+
+  .design-slider__discount-container {
+    gap: 0.8rem;
+  }
+
+  .design-slider__discount-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.35rem;
+  }
+
+  .design-slider__savings {
+    font-size: 0.7rem;
+    color: #7ED3B3;
+  }
+
+  .design-slider__original-price {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px){
+  .design-slider { 
+    padding: 2rem 0; 
+  }
+
+  .design-slider__container {
+    padding: 0 0.6rem;
+  }
+
+  .design-slider__title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .design-slider__controls {
+    gap: 0.7rem;
+  }
+
+  .design-slider__arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+
+  .design-slider__dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .design-slider__track { 
+    grid-auto-columns: 95%; 
+  }
+
+  .design-slider__card {
+    border-radius: 8px;
+  }
+
+  .design-slider__header {
+    min-height: 180px;
+  }
+
+  .design-slider__image {
+    padding: 1.2rem;
+    min-height: 120px;
+  }
+
+  .design-slider__image img {
+    height: 80px;
+  }
+
+  .design-slider__content {
+    padding: 1rem;
+  }
+
+  .design-slider__name {
+    font-size: 0.95rem;
+    min-height: 38px;
+  }
+
+  .design-slider__subtitle {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .design-slider__price {
+    font-size: 1.2rem;
+    color: #ffffff;
+  }
+
+  .design-slider__price--discounted {
+    color: #E02424;
+  }
+
+  .design-slider__old-price {
+    font-size: 0.85rem;
+  }
+
+  .design-slider__saved {
+    font-size: 0.78rem;
+  }
+
+  .design-slider__discount-container {
+    gap: 0.6rem;
+  }
+
+  .design-slider__discount-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .design-slider__savings {
+    font-size: 0.65rem;
+    color: #7ED3B3;
+  }
+
+  .design-slider__original-price {
+    font-size: 0.75rem;
+  }
+}
+

@@ -1,0 +1,205 @@
+/* Navbar floating with rounded corners - Main navbar only */
+nav:not(.bottom-navbar) {
+  border-radius: 20px;
+  margin: 12px;
+  max-width: calc(100% - 24px);
+  box-shadow: 0 4px 20px rgba(139, 133, 133, 0.3);
+  left: 12px !important;
+  right: 12px !important;
+  width: auto !important;
+  background: #1F1F2C !important;
+  background-color: #1F1F2C !important;
+}
+
+/* Override all navbar background colors */
+nav:not(.bottom-navbar) > div {
+  background: #1F1F2C !important;
+  background-color: #1F1F2C !important;
+}
+
+/* Navbar Typography */
+nav:not(.bottom-navbar) {
+  font-family: 'DINNextLTArabic-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  color: #b5b8ba;
+}
+
+/* Navbar links and text */
+nav:not(.bottom-navbar) a,
+nav:not(.bottom-navbar) button,
+nav:not(.bottom-navbar) span,
+nav:not(.bottom-navbar) li,
+nav:not(.bottom-navbar) ul {
+  font-family: 'DINNextLTArabic-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  color: #c0c4c7;
+}
+
+/* Override text colors for specific elements */
+nav:not(.bottom-navbar) a,
+nav:not(.bottom-navbar) button {
+  color: #b5babe !important;
+  background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  nav:not(.bottom-navbar) {
+    margin: 8px;
+    max-width: calc(100% - 16px);
+    border-radius: 16px;
+    left: 8px !important;
+    right: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  nav:not(.bottom-navbar) {
+    margin: 6px;
+    max-width: calc(100% - 12px);
+    border-radius: 12px;
+    left: 6px !important;
+    right: 6px !important;
+  }
+}
+
+.navbar-logo-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px;
+  isolation: isolate;
+  overflow: visible;
+}
+
+/* Logo positioning - keep logo at right edge */
+nav:not(.bottom-navbar) .logo-right-spacing {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+nav:not(.bottom-navbar) .navbar-logo-wrapper--lg {
+  margin-right: 0 !important;
+}
+
+/* Navigation links - move to the right */
+nav:not(.bottom-navbar) .flex.items-center.gap-4 {
+  margin-right: 60px !important;
+}
+
+/* Dropdown menu yellow bar indicator */
+.dropdown-menu-item {
+  position: relative;
+  padding-right: 1.5rem !important;
+}
+
+.dropdown-yellow-bar {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background-color: #F7EC06;
+  border-radius: 2px;
+}
+
+.navbar-logo-wrapper::before,
+.navbar-logo-wrapper::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.navbar-logo-wrapper::before {
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    #2bd9ff 0%,
+    rgba(244, 255, 43, 0.08) 40%,
+    rgba(43, 217, 255, 0.18) 65%,
+    #4f7bff 100%
+  );
+  animation: navbar-logo-rotate 6s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(79, 123, 255, 0.35));
+  z-index: -2;
+}
+
+.navbar-logo-wrapper::after {
+  inset: 4px;
+  background: #141420;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+  z-index: -1;
+}
+
+.navbar-logo-image {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  border: 1px solid rgba(79, 123, 255, 0.35);
+  box-shadow: 0 3px 12px rgba(26, 64, 147, 0.35);
+}
+
+.navbar-logo-wrapper--sm {
+  width: 48px;
+  height: 48px;
+}
+
+.navbar-logo-wrapper--md {
+  width: 62px;
+  height: 62px;
+}
+
+.navbar-logo-wrapper--lg {
+  width: 66px;
+  height: 66px;
+}
+
+@keyframes navbar-logo-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .navbar-logo-wrapper--lg {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .navbar-logo-wrapper--md {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-logo-wrapper--lg,
+  .navbar-logo-wrapper--md {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .navbar-logo-wrapper--sm {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-logo-wrapper--lg,
+  .navbar-logo-wrapper--md,
+  .navbar-logo-wrapper--sm {
+    width: 40px;
+    height: 40px;
+  }
+}
+
