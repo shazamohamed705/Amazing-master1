@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { HiArrowSmallLeft } from "react-icons/hi2";
 import { HiArrowSmallRight } from "react-icons/hi2";
 import { IoIosHeartEmpty, IoIosHeart } from "react-icons/io";
@@ -19,45 +19,96 @@ const DesignSlider = memo(function DesignSlider() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // جلب الكاتوجري والخدمات
+  // جلب كاتوجري السوشيال ميديا مع السابكاتجوريات وكل الخدمات
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadSocialMediaCategory = async () => {
       try {
         setLoading(true);
         const response = await apiClient.get('/categories');
         if (response.success && response.data) {
-          // جلب الخدمات لكل كاتوجري
-          const categoriesWithServices = await Promise.all(
-            response.data
-              .filter(cat => cat.is_active && cat.show_in_navbar && !cat.parent_id)
-              .slice(0, 5) // أول 5 كاتوجري
-              .map(async (category) => {
-                try {
-                  const catResponse = await apiClient.get(`/categories/${category.id}`);
-                  if (catResponse.success && catResponse.data?.services) {
-                    const services = catResponse.data.services.slice(0, 4).map(s => ({
-                      id: s.id,
-                      title: s.name,
-                      subtitle: s.short_description || s.description || '',
-                      price: parseFloat(s.price) || 0,
-                      description: s.description || '',
-                      image: s.image,
-                      slug: s.slug,
-                    }));
-                    return {
-                      id: category.id,
-                      name: category.name,
-                      services: services,
-                    };
-                  }
-                  return null;
-                } catch (error) {
-                  console.error(`Error loading services for category ${category.id}:`, error);
-                  return null;
-                }
-              })
+          // البحث عن كاتوجري السوشيال ميديا الرئيسي
+          const socialMediaCategory = response.data.find(cat => 
+            cat.is_active && 
+            !cat.parent_id &&
+            (cat.name?.toLowerCase().includes('سوشيال') || 
+             cat.name?.toLowerCase().includes('social') ||
+             cat.slug?.toLowerCase().includes('social'))
           );
-          setCategories(categoriesWithServices.filter(cat => cat && cat.services.length > 0));
+
+          if (socialMediaCategory) {
+            try {
+              // جلب الكاتوجري الرئيسي مع السابكاتجوريات
+              const catResponse = await apiClient.get(`/categories/${socialMediaCategory.id}`);
+              if (catResponse.success && catResponse.data) {
+                const mainCategory = catResponse.data.category || socialMediaCategory;
+                const subcategories = catResponse.data.subcategories || [];
+                
+                // جمع كل الخدمات من الكاتوجري الرئيسي
+                const mainServices = (catResponse.data.services || []).map(s => ({
+                  id: s.id,
+                  title: s.name,
+                  subtitle: s.short_description || s.description || '',
+                  price: parseFloat(s.price) || 0,
+                  description: s.description || '',
+                  image: s.image,
+                  slug: s.slug,
+                }));
+
+                // جلب الخدمات من جميع السابكاتجوري
+                const subcategoriesWithServices = await Promise.all(
+                  subcategories
+                    .filter(sub => sub.is_active)
+                    .map(async (subcategory) => {
+                      try {
+                        const subResponse = await apiClient.get(`/categories/${subcategory.id}`);
+                        if (subResponse.success && subResponse.data?.services) {
+                          return subResponse.data.services.map(s => ({
+                            id: s.id,
+                            title: s.name,
+                            subtitle: s.short_description || s.description || '',
+                            price: parseFloat(s.price) || 0,
+                            description: s.description || '',
+                            image: s.image,
+                            slug: s.slug,
+                          }));
+                        }
+                        return [];
+                      } catch (error) {
+                        console.error(`Error loading services for subcategory ${subcategory.id}:`, error);
+                        return [];
+                      }
+                    })
+                );
+
+                // دمج كل الخدمات من الكاتوجري الرئيسي وجميع السابكاتجوري
+                const allServices = [
+                  ...mainServices,
+                  ...subcategoriesWithServices.flat()
+                ];
+
+                // إزالة التكرارات بناءً على ID
+                const uniqueServices = allServices.filter((service, index, self) =>
+                  index === self.findIndex(s => s.id === service.id)
+                );
+
+                console.log('Social Media Services loaded:', uniqueServices.length, uniqueServices);
+                
+                setCategories([{
+                  id: mainCategory.id,
+                  name: mainCategory.name,
+                  services: uniqueServices,
+                }]);
+              } else {
+                setCategories([]);
+              }
+            } catch (error) {
+              console.error(`Error loading services for social media category:`, error);
+              setCategories([]);
+            }
+          } else {
+            console.warn('Social media category not found');
+            setCategories([]);
+          }
         }
       } catch (error) {
         console.error('Error loading categories:', error);
@@ -66,28 +117,30 @@ const DesignSlider = memo(function DesignSlider() {
         setLoading(false);
       }
     };
-    loadCategories();
+    loadSocialMediaCategory();
   }, []);
 
   // Responsive visible cards based on screen size
   const getVisibleCards = useCallback(() => {
     const width = window.innerWidth;
-    if (width > 1024) return 4;      // Desktop: 4 cards
-    if (width > 768) return 3;       // Tablet: 3 cards
+    if (width > 1024) return 3;      // Desktop: 3 cards
+    if (width > 768) return 2;       // Tablet: 2 cards
     if (width > 480) return 2;       // Mobile: 2 cards
     return 1;                        // Small Mobile: 1 card
   }, []);
 
-  // تحويل categories إلى flat array من services
-  const allServices = categories.flatMap(cat => 
-    cat.services.map(service => ({ ...service, categoryName: cat.name }))
-  );
+  // تحويل categories إلى flat array من services (using useMemo to prevent infinite loop)
+  const allServices = useMemo(() => {
+    return categories.flatMap(cat => 
+      cat.services.map(service => ({ ...service, categoryName: cat.name }))
+    );
+  }, [categories]);
 
   const SLIDE_DURATION_MS = 220;
   const [visible, setVisible] = useState(getVisibleCards);
   const [index, setIndex] = useState(0);
   const maxIndex = Math.max(0, allServices.length - visible);
-  const [items, setItems] = useState(allServices);
+  const [items, setItems] = useState([]);
   const sectionRef = useRef(null);
   const [isRTL, setIsRTL] = useState(false);
   const trackRef = useRef(null);
@@ -95,7 +148,7 @@ const DesignSlider = memo(function DesignSlider() {
   const isAnimatingRef = useRef(false);
   const [isAutoPaused, setIsAutoPaused] = useState(false);
 
-  // تحديث items عند تغيير categories
+  // تحديث items عند تغيير categories (only when allServices actually changes)
   useEffect(() => {
     setItems(allServices);
     setIndex(0); // Reset index when items change
@@ -198,28 +251,11 @@ const DesignSlider = memo(function DesignSlider() {
     setIndex(Math.min(Math.max(i, 0), maxIndex));
   }, [maxIndex]);
 
-  const handleAddToCart = useCallback(async (service) => {
-    try {
-      await addToCart({
-        id: service.id,
-        package_id: service.id,
-        packageId: service.id,
-        type: 'service',
-        title: service.subtitle || service.title,
-        price: service.price,
-        description: service.description,
-        slug: service.slug,
-      });
-    } catch (error) {
-      showToast(error.message || 'حدث خطأ في إضافة المنتج للسلة', 'warning');
-    }
-  }, [addToCart, showToast]);
-
   const currentPage = index;
   const totalPages = maxIndex + 1;
 
-  // عرض أول كاتوجري أو "التصميم الجرافيكي" كعنوان افتراضي
-  const currentCategoryName = categories.length > 0 ? categories[0]?.name : 'التصميم الجرافيكي';
+  // عرض اسم كاتوجري السوشيال ميديا
+  const currentCategoryName = categories.length > 0 ? categories[0]?.name : 'خدمات السوشيال ميديا';
 
   return (
     <section className="design-slider" dir="rtl" ref={sectionRef}>
@@ -249,21 +285,16 @@ const DesignSlider = memo(function DesignSlider() {
               {items.map((service) => (
               <div key={service.id} className="design-slider__card">
                 <div className="design-slider__header">
-                  <img
-                    src={service.image || 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg'}
-                    alt={service.subtitle || service.title}
+                  <img 
+                    src={service.image || "https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg"} 
+                    alt={service.title || "خدمة"} 
                     className="design-slider__header-image"
-                    onError={(e) => {
-                      e.target.src = 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg';
-                    }}
                   />
                 </div>
                 <div className="design-slider__content">
-                  <h4 className="design-slider__description">{service.subtitle || service.title}</h4>
-                  <div className="design-slider__pricing" dir="rtl">
-                    <span className="design-slider__price">
-                      {service.price} <SaudiRiyalIcon width={14} height={15} />
-                    </span>
+                  <h4 className="design-slider__description">{service.title}</h4>
+                  <div className="design-slider__pricing">
+                    <span className="design-slider__price">{service.price} <SaudiRiyalIcon width={14} height={15} color="#ffffff" /></span>
                   </div>
                   <div className="design-slider__actions">
                     <button className="design-slider__favorite-btn" onClick={() => toggleFavorite(service.id)} aria-label={isFav(service.id) ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}>
@@ -271,7 +302,21 @@ const DesignSlider = memo(function DesignSlider() {
                     </button>
                     <button 
                       className="design-slider__add-to-cart"
-                      onClick={() => handleAddToCart(service)}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        try {
+                          await addToCart({
+                            ...service,
+                            package_id: service.id,
+                            packageId: service.id,
+                            type: 'service'
+                          });
+                          showToast('تمت الإضافة للسلة بنجاح', 'success');
+                        } catch (error) {
+                          showToast(error.message || 'حدث خطأ في إضافة المنتج للسلة', 'warning');
+                        }
+                      }}
                     >
                       <TbShoppingBag />
                       إضافة للسلة

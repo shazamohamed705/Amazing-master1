@@ -351,3 +351,19 @@
   }
 }
 
+@media (max-width: 768px) {
+  .portfolio__grid--cards,
+  .category-grid,
+  .category-grid--cards,
+  .service-packages-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+@media (max-width: 768px) {
+  .category-container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}

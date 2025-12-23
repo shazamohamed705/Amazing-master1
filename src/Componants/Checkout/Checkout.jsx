@@ -7,7 +7,8 @@ import { useToast } from '../../contexts/ToastContext';
 import SaudiRiyalIcon from '../SaudiRiyalIcon/SaudiRiyalIcon';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://storage-te.com/backend/api/v1';
-const CHECKOUT_ENDPOINTS = ['/checkout', '/orders/checkout', '/orders'];
+// Use the single backend endpoint that returns the documented checkout response
+const CHECKOUT_ENDPOINTS = ['/checkout'];
 
 const PAYMENT_METHODS = [
   { value: 'bank_transfer', label: 'تحويل بنكي' },
@@ -16,13 +17,19 @@ const PAYMENT_METHODS = [
   { value: 'visa_master', label: 'بطاقة ائتمانية' },
 ];
 
-const buildCheckoutPayload = (formData, cartItems) => {
+const buildCheckoutPayload = (formData, cartItems, orderSummary) => {
+  // Build payload matching what works in Postman
+  // Backend likely gets user contact info from the authenticated user profile (token)
   const payload = {
+    subtotal: orderSummary.subtotal || 0,
+    discount: 0, // Will be calculated if coupon is applied
+    total: orderSummary.total || 0,
     payment_method: formData.paymentMethod,
-    notes: formData.notes?.trim() || undefined,
-    contact_name: formData.fullName.trim(),
-    contact_email: formData.email.trim() || undefined,
-    contact_phone: formData.phone.trim(),
+    coupon_applied: null, // Will be set if coupon is applied
+    notes: formData.notes?.trim() || '',
+    address: formData.address?.trim() || '',
+    country: formData.country?.trim() || '',
+    city: formData.city?.trim() || '',
     items: cartItems.map((item) => ({
       id: item.id,
       cart_item_id: item.cartItemId,
@@ -32,11 +39,10 @@ const buildCheckoutPayload = (formData, cartItems) => {
     })),
   };
 
-  if (!payload.contact_email) {
-    delete payload.contact_email;
-  }
-  if (!payload.notes) {
-    delete payload.notes;
+  // Only include coupon_code if it has a value
+  if (formData.couponCode?.trim()) {
+    payload.coupon_code = formData.couponCode.trim();
+    payload.coupon_applied = true; // Set to true if coupon exists
   }
 
   return payload;
@@ -89,6 +95,7 @@ const validateForm = (formData) => {
   if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
     errors.email = 'صيغة البريد الإلكتروني غير صحيحة';
   }
+  // Notes, address, country, city are now optional
   return errors;
 };
 
@@ -112,6 +119,10 @@ const Checkout = () => {
       email: storedUser?.email || '',
       phone: storedUser?.phone || '',
       notes: '',
+      couponCode: '',
+      address: '',
+      country: '',
+      city: '',
       paymentMethod: 'bank_transfer',
     };
   });
@@ -194,7 +205,7 @@ const Checkout = () => {
     setSubmitting(true);
 
     try {
-      const payload = buildCheckoutPayload(formData, items);
+      const payload = buildCheckoutPayload(formData, items, orderSummary);
       const response = await submitCheckout(payload, token, controller.signal);
       showToast('تم إرسال طلبك بنجاح، سنقوم بالتواصل قريباً', 'success');
       await clearCart();
@@ -284,7 +295,65 @@ const Checkout = () => {
               </div>
 
               <div className="checkout-field">
-                <label htmlFor="notes">ملاحظات</label>
+                <label htmlFor="couponCode">كود الكوبون (اختياري)</label>
+                <input
+                  id="couponCode"
+                  name="couponCode"
+                  type="text"
+                  placeholder="أدخل كود الكوبون إن وجد"
+                  value={formData.couponCode}
+                  onChange={handleInputChange}
+                  disabled={submitting}
+                />
+                {formErrors.couponCode && <p className="checkout-error">{formErrors.couponCode}</p>}
+              </div>
+
+              <div className="checkout-row">
+                <div className="checkout-field">
+                  <label htmlFor="country">الدولة (اختياري)</label>
+                  <input
+                    id="country"
+                    name="country"
+                    type="text"
+                    placeholder="أدخل اسم الدولة"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    disabled={submitting}
+                  />
+                  {formErrors.country && <p className="checkout-error">{formErrors.country}</p>}
+                </div>
+
+                <div className="checkout-field">
+                  <label htmlFor="city">المدينة (اختياري)</label>
+                  <input
+                    id="city"
+                    name="city"
+                    type="text"
+                    placeholder="أدخل اسم المدينة"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    disabled={submitting}
+                  />
+                  {formErrors.city && <p className="checkout-error">{formErrors.city}</p>}
+                </div>
+              </div>
+
+              <div className="checkout-field">
+                <label htmlFor="address">العنوان (اختياري)</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  placeholder="أدخل عنوانك الكامل"
+                  rows={3}
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  disabled={submitting}
+                />
+                {formErrors.address && <p className="checkout-error">{formErrors.address}</p>}
+              </div>
+
+              <div className="checkout-field">
+                <label htmlFor="notes">ملاحظات (اختياري)</label>
                 <textarea
                   id="notes"
                   name="notes"
@@ -294,6 +363,7 @@ const Checkout = () => {
                   onChange={handleInputChange}
                   disabled={submitting}
                 />
+                {formErrors.notes && <p className="checkout-error">{formErrors.notes}</p>}
               </div>
 
               <button type="submit" className="checkout-submit" disabled={submitting}>

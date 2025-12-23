@@ -115,8 +115,16 @@ const ProductsSlider = memo(function ProductsSlider({ categoryId }) {
   const trackRef = useRef(null);
   const autoScrollRef = useRef(null);
   const isAnimatingRef = useRef(false);
+  const itemsLengthRef = useRef(products.length);
   const [isRTL, setIsRTL] = useState(false);
   const [isAutoPaused, setIsAutoPaused] = useState(false);
+
+  // Update items when products change
+  useEffect(() => {
+    setItems(products);
+    itemsLengthRef.current = products.length;
+    setIndex(0);
+  }, [products]);
 
   useEffect(() => {
     const dir = sectionRef.current?.getAttribute('dir') || document?.dir || 'ltr';
@@ -156,7 +164,10 @@ const ProductsSlider = memo(function ProductsSlider({ categoryId }) {
           }
           return arr;
         });
-        setIndex((p) => direction === 'next' ? (p + 1) % items.length : (p - 1 + items.length) % items.length);
+        setIndex((p) => {
+          const length = itemsLengthRef.current;
+          return direction === 'next' ? (p + 1) % length : (p - 1 + length) % length;
+        });
         requestAnimationFrame(() => {
           track.style.transition = '';
           track.style.willChange = '';
@@ -165,7 +176,7 @@ const ProductsSlider = memo(function ProductsSlider({ categoryId }) {
       });
     };
     track.addEventListener('transitionend', onEnd);
-  }, [SLIDE_DURATION_MS, items.length]);
+  }, [SLIDE_DURATION_MS]);
 
   const next = useCallback(() => performSlide('next'), [performSlide]);
   const prev = useCallback(() => performSlide('prev'), [performSlide]);

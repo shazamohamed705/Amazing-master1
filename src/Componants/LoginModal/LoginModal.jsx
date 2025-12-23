@@ -30,9 +30,10 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
     setConfirmPassword('');
     setShowPassword(false);
     setShowConfirmPassword(false);
-    setIsSignUp(false);
     setIsSubmitting(false);
     setEmailError('');
+    setFormErrors({});
+    setFormSuccess('');
   }, []);
 
   // Validate email in real-time
@@ -111,13 +112,16 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
 
   const toggleMode = useCallback(() => {
     setIsSignUp(prev => !prev);
-    // Reset form fields when switching modes
+    // Reset form fields and validation when switching modes
     setEmail('');
     setName('');
     setPassword('');
     setConfirmPassword('');
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setEmailError('');
+    setFormErrors({});
+    setFormSuccess('');
   }, []);
 
   const togglePassword = useCallback(() => {
@@ -129,10 +133,11 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
   }, []);
 
   const validateForm = useCallback(() => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const errors = {};
-    
-    if (!email || !emailRegex.test(email)) {
+
+    // Normalize and validate email using the same logic used in real-time validation
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !validateEmail(trimmedEmail)) {
       errors.email = 'يرجى إدخال بريد إلكتروني صحيح';
       setFormErrors(errors);
       showToast('يرجى إدخال بريد إلكتروني صحيح', 'error');
@@ -171,7 +176,7 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
 
     setFormErrors({});
     return true;
-  }, [email, name, password, confirmPassword, isSignUp, showToast]);
+  }, [email, name, password, confirmPassword, isSignUp, showToast, validateEmail]);
 
   // API base URL
   const API_BASE_URL = 'https://storage-te.com/backend/api/v1';
@@ -315,16 +320,21 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
           password_confirmation: confirmPassword,
         });
 
-        // Success - reset form and close modal
-        resetForm();
-        setFormSuccess('تم إنشاء الحساب بنجاح!');
+        // Success - close modal only when registration is actually successful
         showToast('تم إنشاء الحساب بنجاح!', 'success');
-        
-        // Call the parent component's submit handler if provided
-        // The parent component will close the modal
+
+        // Inform parent (if needed) that signup succeeded
         if (typeof onSubmit === 'function') {
-          onSubmit({ email, name, password, type: 'signup', response });
+          onSubmit({
+            type: 'signup',
+            email: email.trim(),
+            name: name.trim(),
+            response,
+          });
         }
+
+        // Close modal and reset form AFTER successful registration only
+        handleClose();
       } else {
         // Call login API
         const response = await loginUser(email.trim(), password);
@@ -450,7 +460,7 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
                 placeholder="أدخل اسمك"
                 className="login-modal__input"
                 dir="rtl"
-                autoComplete="off"
+              autoComplete="new-name"
                 required
                 disabled={isSubmitting}
                 minLength={2}
@@ -469,13 +479,18 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
                 const value = e.target.value;
                 setEmail(value);
                 validateEmail(value);
-                if (formErrors.email) setFormErrors({...formErrors, email: null});
+                if (formErrors.email) {
+                  // Remove only the email validation error when user edits the field
+                  const nextErrors = { ...formErrors };
+                  delete nextErrors.email;
+                  setFormErrors(nextErrors);
+                }
               }}
               onBlur={() => validateEmail(email)}
               placeholder="your@email.com"
               className={`login-modal__input ${emailError || formErrors.email ? 'login-modal__input--error' : ''}`}
               dir="rtl"
-              autoComplete="off"
+              autoComplete="new-email"
               required
               disabled={isSubmitting}
             />
@@ -497,12 +512,17 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    if (formErrors.password) setFormErrors({...formErrors, password: null});
+                    if (formErrors.password) {
+                      // Remove only the password validation error when user edits the field
+                      const nextErrors = { ...formErrors };
+                      delete nextErrors.password;
+                      setFormErrors(nextErrors);
+                    }
                   }}
                   placeholder="أدخل كلمة المرور"
                   className={`login-modal__input login-modal__password-input ${formErrors.password ? 'login-modal__input--error' : ''}`}
                   dir="rtl"
-                  autoComplete="off"
+                  autoComplete="current-password"
                   required
                   disabled={isSubmitting}
                 />
@@ -537,7 +557,7 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
                     placeholder="أدخل كلمة المرور"
                     className={`login-modal__input login-modal__password-input ${formErrors.password ? 'login-modal__input--error' : ''}`}
                     dir="rtl"
-                    autoComplete="off"
+                    autoComplete="new-password"
                     required
                     disabled={isSubmitting}
                     minLength={6}
@@ -566,14 +586,19 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
                     ref={confirmPasswordInputRef}
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      if (formErrors.confirmPassword) setFormErrors({...formErrors, confirmPassword: null});
-                    }}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (formErrors.confirmPassword) {
+                          // Remove only the confirm password validation error when user edits the field
+                          const nextErrors = { ...formErrors };
+                          delete nextErrors.confirmPassword;
+                          setFormErrors(nextErrors);
+                        }
+                      }}
                     placeholder="أعد إدخال كلمة المرور"
                     className={`login-modal__input login-modal__password-input ${formErrors.confirmPassword ? 'login-modal__input--error' : ''}`}
                     dir="rtl"
-                    autoComplete="off"
+                    autoComplete="new-password"
                     required
                     disabled={isSubmitting}
                     minLength={6}
@@ -595,7 +620,13 @@ const LoginModal = memo(({ onClose, onSubmit }) => {
           {/* Submit Button */}
           <button 
             type="submit"
-            disabled={isSubmitting || !email || !password || (isSignUp && (!name || !confirmPassword))}
+            disabled={
+              isSubmitting ||
+              !email.trim() ||
+              !!emailError ||
+              !password ||
+              (isSignUp && (!name || !confirmPassword))
+            }
             className="login-modal__submit-btn"
           >
             {isSubmitting 

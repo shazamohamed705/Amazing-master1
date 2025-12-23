@@ -1,59 +1,109 @@
 import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
 import { HiArrowSmallLeft } from "react-icons/hi2";
 import { HiArrowSmallRight } from "react-icons/hi2";
-import { CiHeart } from "react-icons/ci";
-import { TbShoppingBag } from "react-icons/tb";
+import { Link } from 'react-router-dom';
 import { apiClient } from '../../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import './WebDevSlider.css';
 
 const AUTO_SCROLL_DELAY_MS = 2500;
+const MEDIA_PRODUCTION_SLUG = 'media-production'; // أو يمكن استخدام ID: 36
 
 const WebDevSlider = memo(function WebDevSlider() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [type, setType] = useState('portfolio'); // 'portfolio' or 'articles'
+  const [categoryName, setCategoryName] = useState('الميديا بروداكشن');
 
-  // جلب Portfolio و Articles
+  // جلب كاتجوري الميديا بروداكشن مع السابكاتجوريات والخدمات
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        // جلب Portfolio أولاً
-        const portfolioResponse = await apiClient.get('/portfolio', { per_page: 10 });
-        let portfolioItems = [];
-        if (portfolioResponse.success && portfolioResponse.data?.data) {
-          portfolioItems = portfolioResponse.data.data.map(item => ({
-            id: item.id,
-            title: item.title,
-            image: item.image,
-            slug: item.slug,
-            type: 'portfolio',
-            url: `/portfolio/${item.slug || item.id}`,
-          }));
+        
+        // جلب الكاتجوري الرئيسي
+        const categoryResponse = await apiClient.get(`/categories/${MEDIA_PRODUCTION_SLUG}`);
+        if (!categoryResponse.success || !categoryResponse.data?.category) {
+          throw new Error('لم يتم العثور على الكاتجوري');
         }
 
-        // جلب Articles
-        const articlesResponse = await apiClient.get('/articles', { per_page: 10 });
-        let articleItems = [];
-        if (articlesResponse.success && articlesResponse.data?.data) {
-          articleItems = articlesResponse.data.data.map(item => ({
-            id: item.id,
-            title: item.title,
-            image: item.image || item.featured_image,
-            slug: item.slug,
-            type: 'article',
-            url: `/article/${item.slug || item.id}`,
-          }));
-        }
+        const mainCategory = categoryResponse.data.category;
+        setCategoryName(mainCategory.name);
+        const subcategories = categoryResponse.data.subcategories || [];
 
-        // دمج Portfolio و Articles (Portfolio أولاً ثم Articles)
-        const combined = [...portfolioItems, ...articleItems].slice(0, 20);
-        setItems(combined);
-        setType(combined.length > 0 ? combined[0].type : 'portfolio');
+        // جلب الخدمات لكل سابكاتجوري
+        const subcategoriesWithServices = await Promise.all(
+          subcategories
+            .filter(sub => sub.is_active)
+            .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+            .map(async (subcategory) => {
+              try {
+                const subResponse = await apiClient.get(`/categories/${subcategory.id}`);
+                const services = subResponse.success && subResponse.data?.services 
+                  ? subResponse.data.services.map(s => ({
+                      id: s.id,
+                      name: s.name,
+                      image: s.image,
+                      slug: s.slug,
+                      price: parseFloat(s.price) || 0,
+                      short_description: s.short_description || s.description || '',
+                    }))
+                  : [];
+                
+                return {
+                  id: subcategory.id,
+                  name: subcategory.name,
+                  slug: subcategory.slug,
+                  description: subcategory.description,
+                  services: services,
+                };
+              } catch (error) {
+                console.error(`Error loading services for subcategory ${subcategory.id}:`, error);
+                return {
+                  id: subcategory.id,
+                  name: subcategory.name,
+                  slug: subcategory.slug,
+                  description: subcategory.description,
+                  services: [],
+                };
+              }
+            })
+        );
+
+        // تحويل السابكاتجوريات والخدمات إلى items للعرض
+        const allItems = [];
+        subcategoriesWithServices.forEach(subcategory => {
+          if (subcategory.services.length > 0) {
+            // إضافة السابكاتجوري كعنوان
+            allItems.push({
+              id: `subcat-${subcategory.id}`,
+              type: 'subcategory',
+              title: subcategory.name,
+              description: subcategory.description,
+              slug: subcategory.slug,
+              url: `/category/${subcategory.slug}`,
+              image: null,
+            });
+            
+            // إضافة الخدمات الخاصة بالسابكاتجوري
+            subcategory.services.forEach(service => {
+              allItems.push({
+                id: service.id,
+                type: 'service',
+                title: service.name,
+                description: service.short_description,
+                image: service.image,
+                slug: service.slug,
+                url: `/service/${service.slug || service.id}`,
+                price: service.price,
+              });
+            });
+          }
+        });
+
+        setItems(allItems);
       } catch (error) {
-        console.error('Error loading portfolio/articles:', error);
+        console.error('Error loading media production category:', error);
         setItems([]);
       } finally {
         setLoading(false);
@@ -156,9 +206,7 @@ const WebDevSlider = memo(function WebDevSlider() {
         onBlurCapture={() => setIsAutoPaused(false)}
       >
         <div className="webdev-slider__header-section">
-          <h2 className="webdev-slider__title">
-            {type === 'portfolio' ? 'سابقة الأعمال' : 'المقالات'}
-          </h2>
+          <h2 className="webdev-slider__title">{categoryName}</h2>
           <div className="webdev-slider__underline" />
         </div>
 
@@ -176,34 +224,62 @@ const WebDevSlider = memo(function WebDevSlider() {
               {items.map((item) => (
                 <div 
                   key={`${item.type}-${item.id}`} 
-                  className="webdev-slider__card"
-                  onClick={() => item.url && navigate(item.url)}
-                  style={{ cursor: 'pointer' }}
+                  className={`webdev-slider__card ${item.type === 'subcategory' ? 'webdev-slider__card--subcategory' : ''}`}
+                  onClick={() => item.url && item.type !== 'subcategory' && navigate(item.url)}
+                  style={{ cursor: item.type === 'subcategory' ? 'default' : 'pointer' }}
                 >
-                  <div className="webdev-slider__header">
-                    <img
-                      src={item.image || 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg'}
-                      alt={item.title}
-                      className="webdev-slider__header-image"
-                      onError={(e) => {
-                        e.target.src = 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg';
-                      }}
-                    />
-                  </div>
-                  <div className="webdev-slider__content">
-                    <h4 className="webdev-slider__description">{item.title}</h4>
-                    <div className="webdev-slider__actions">
-                      <button 
-                        className="webdev-slider__view-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (item.url) navigate(item.url);
-                        }}
+                  {item.type === 'subcategory' ? (
+                    // عرض السابكاتجوري كعنوان
+                    <div className="webdev-slider__subcategory-header">
+                      <h3 className="webdev-slider__subcategory-title">{item.title}</h3>
+                      {item.description && (
+                        <p className="webdev-slider__subcategory-description">{item.description}</p>
+                      )}
+                      <Link 
+                        to={item.url} 
+                        className="webdev-slider__view-all-btn"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        {item.type === 'portfolio' ? 'عرض المشروع' : 'قراءة المقال'}
-                      </button>
+                        عرض الكل
+                      </Link>
                     </div>
-                  </div>
+                  ) : (
+                    // عرض الخدمة
+                    <>
+                      <div className="webdev-slider__header">
+                        <img
+                          src={item.image || 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg'}
+                          alt={item.title}
+                          className="webdev-slider__header-image"
+                          onError={(e) => {
+                            e.target.src = 'https://cdn.salla.sa/DQYwE/60e65ac0-11ff-4c02-a51d-1df33680522d-500x375.10584250635-jfWA4k2ZTz1KIraipWtBoxrfuWrIO1Npoq146dPR.jpg';
+                          }}
+                        />
+                      </div>
+                      <div className="webdev-slider__content">
+                        <h4 className="webdev-slider__description">{item.title}</h4>
+                        {item.description && (
+                          <p className="webdev-slider__service-description">
+                            {item.description.replace(/<[^>]*>/g, '').substring(0, 60)}...
+                          </p>
+                        )}
+                        {item.price && (
+                          <p className="webdev-slider__price">{item.price} ر.س</p>
+                        )}
+                        <div className="webdev-slider__actions">
+                          <button 
+                            className="webdev-slider__view-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (item.url) navigate(item.url);
+                            }}
+                          >
+                            عرض الخدمة
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>

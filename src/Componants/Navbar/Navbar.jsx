@@ -95,34 +95,129 @@ const Navbar = memo(() => {
 
   // Fetch navigation data from API
   useEffect(() => {
+    // Transform categories data to navigation format (defined inside useEffect to avoid dependency issues)
+    const transformCategoriesToNavigation = (categories) => {
+      if (!Array.isArray(categories)) {
+        console.log('[Navbar] transformCategoriesToNavigation: categories is not an array', categories);
+        return [];
+      }
+      
+      console.log('[Navbar] transformCategoriesToNavigation: Raw categories count:', categories.length);
+      console.log('[Navbar] transformCategoriesToNavigation: Raw categories:', categories);
+      
+      // Filter only active categories that should show in navbar
+      // show_in_navbar must be explicitly true (not false, null, or undefined)
+      const activeCategories = categories.filter(cat => 
+        cat.is_active === true && cat.show_in_navbar === true
+      );
+      
+      console.log('[Navbar] transformCategoriesToNavigation: Active categories count:', activeCategories.length);
+      console.log('[Navbar] transformCategoriesToNavigation: Active categories:', activeCategories);
+      
+      // Separate parent and child categories
+      const parentCategories = activeCategories.filter(cat => cat.parent_id === null);
+      const childCategories = activeCategories.filter(cat => cat.parent_id !== null);
+      
+      // Build navigation structure
+      const navigationItems = parentCategories
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+        .map(parent => {
+          // Find all subcategories for this parent
+          const subcategories = childCategories
+            .filter(child => child.parent_id === parent.id)
+            .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+            .map(child => ({
+              id: child.id,
+              name: child.name,
+              url: `/category/${child.slug}`,
+              slug: child.slug,
+              sort_order: child.sort_order || 0
+            }));
+          
+          return {
+            id: parent.id,
+            type: 'category',
+            name: parent.name,
+            url: `/category/${parent.slug}`,
+            slug: parent.slug,
+            sort_order: parent.sort_order || 0,
+            subcategories: subcategories.length > 0 ? subcategories : undefined
+          };
+        });
+      
+      console.log('[Navbar] transformCategoriesToNavigation: Final navigation items:', navigationItems);
+      return navigationItems;
+    };
+
     const loadNavigation = async () => {
       try {
-        const { frontendApi } = await import('../../services/apiClient');
-        const response = await frontendApi.get('/navigation');
-        if (response.success && response.data) {
-          // Sort navigation data by order/sort_order
-          const sortedData = [...response.data].sort((a, b) => {
-            const orderA = a.sort_order !== undefined ? a.sort_order : (a.order || 0);
-            const orderB = b.sort_order !== undefined ? b.sort_order : (b.order || 0);
-            return orderA - orderB;
-          });
+        const { frontendApi, apiClient } = await import('../../services/apiClient');
+        
+        // Try to get navigation from frontend API first
+        try {
+          const navResponse = await frontendApi.get('/navigation');
+          console.log('[Navbar] Navigation API Response:', navResponse);
+          console.log('[Navbar] Navigation Data:', navResponse.data);
           
-          // Sort subcategories within each category by sort_order
-          const dataWithSortedSubcategories = sortedData.map(item => {
-            if (item.type === 'category' && item.subcategories && Array.isArray(item.subcategories)) {
-              return {
-                ...item,
-                subcategories: [...item.subcategories].sort((a, b) => {
-                  const orderA = a.sort_order !== undefined ? a.sort_order : 0;
-                  const orderB = b.sort_order !== undefined ? b.sort_order : 0;
-                  return orderA - orderB;
-                })
-              };
-            }
-            return item;
-          });
-          
-          setNavigationData(dataWithSortedSubcategories);
+          if (navResponse.success && navResponse.data && Array.isArray(navResponse.data) && navResponse.data.length > 0) {
+            // Filter categories that should show in navbar (if they have show_in_navbar property)
+            const filteredData = navResponse.data.filter(item => {
+              if (item.type === 'category') {
+                // For categories, check show_in_navbar if it exists
+                return item.show_in_navbar !== false;
+              }
+              // For pages, always show them
+              return true;
+            });
+            
+            console.log('[Navbar] Filtered Navigation Data:', filteredData);
+            
+            // Sort navigation data by order/sort_order
+            const sortedData = [...filteredData].sort((a, b) => {
+              const orderA = a.sort_order !== undefined ? a.sort_order : (a.order || 0);
+              const orderB = b.sort_order !== undefined ? b.sort_order : (b.order || 0);
+              return orderA - orderB;
+            });
+            
+            // Sort subcategories within each category by sort_order
+            const dataWithSortedSubcategories = sortedData.map(item => {
+              if (item.type === 'category' && item.subcategories && Array.isArray(item.subcategories)) {
+                // Filter subcategories that should show in navbar
+                const filteredSubcategories = item.subcategories.filter(sub => sub.show_in_navbar !== false);
+                return {
+                  ...item,
+                  subcategories: filteredSubcategories.sort((a, b) => {
+                    const orderA = a.sort_order !== undefined ? a.sort_order : 0;
+                    const orderB = b.sort_order !== undefined ? b.sort_order : 0;
+                    return orderA - orderB;
+                  })
+                };
+              }
+              return item;
+            });
+            
+            console.log('[Navbar] Final Navigation Data (after sorting):', dataWithSortedSubcategories);
+            setNavigationData(dataWithSortedSubcategories);
+            setLoadingNav(false);
+            return;
+          } else {
+            console.log('[Navbar] Navigation endpoint returned empty or invalid data');
+          }
+        } catch (navError) {
+          console.log('[Navbar] Navigation endpoint not available, falling back to categories', navError);
+        }
+        
+        // Fallback: Get categories and transform them
+        const categoriesResponse = await apiClient.get('/categories');
+        console.log('[Navbar] Categories API Response:', categoriesResponse);
+        console.log('[Navbar] Categories Data:', categoriesResponse.data);
+        
+        if (categoriesResponse.success && categoriesResponse.data) {
+          const transformedData = transformCategoriesToNavigation(categoriesResponse.data);
+          console.log('[Navbar] Transformed Categories Data:', transformedData);
+          setNavigationData(transformedData);
+        } else {
+          console.log('[Navbar] Categories endpoint returned empty or invalid data');
         }
       } catch (error) {
         console.error('Error loading navigation:', error);
@@ -131,7 +226,7 @@ const Navbar = memo(() => {
       }
     };
     loadNavigation();
-  }, []);
+  }, []); // Empty dependency array - only run once on mount
 
   // Debug: Log totalItems changes
   useEffect(() => {
@@ -403,66 +498,69 @@ const Navbar = memo(() => {
           </div>
         </div>
         <div className="w-full hidden lg:flex flex-col items-center gap-1">
-            {/* First Row - Navigation Links */}
+            {/* First Row - Navigation Links (First 9 categories) */}
             <div className="w-full flex justify-between items-center pt-1">
               {/* Navigation links on the left */}
               <div className="flex items-center gap-4">
                 <ul className="flex items-center gap-5 list-none m-0 p-0 flex-row-reverse">
-            {/* Dynamic navigation from API */}
-            {!loadingNav && navigationData.map((item) => {
-              if (item.type === 'page') {
-                return (
-                  <li key={item.id} className="relative">
-                    <Link to={item.url} className={linkClass}>{item.name}</Link>
-                  </li>
-                );
-              }
-              if (item.type === 'category' && item.subcategories && item.subcategories.length > 0) {
-                return (
-                  <li key={item.id} className="relative" onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)} onMouseLeave={handleMouseLeave}>
-                    <Link to={item.url} className={linkClass}>
-                      <RiArrowDropDownLine className="inline-block ml-1" /> {item.name}
-                    </Link>
-                    {openDropdown === `cat_${item.id}` && (
-                      <div 
-                        dir="rtl"
-                        className="absolute top-full right-0 mt-2 bg-[#141420] rounded-lg shadow-[0_8px_20px_rgba(31,31,44,0.3)] min-w-[280px] p-3 z-50"
-                        onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        <div className="mb-2">
-                          <h4 className="text-[#F7EC06] font-bold text-sm mb-3 pb-2 border-b-2 border-[#F7EC06] text-right">{item.name}</h4>
-                          <ul className="list-none p-0 m-0 flex flex-col gap-1">
-                            <li>
-                              <Link to={item.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
-                                <span className="dropdown-yellow-bar"></span>
-                                عرض الكل
-                              </Link>
-                            </li>
-                            {item.subcategories.map((subcategory) => (
-                              <li key={subcategory.id}>
-                                <Link to={subcategory.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
+            {/* Dynamic navigation from API - First 9 items */}
+            {!loadingNav && (() => {
+              const firstRowItems = navigationData.slice(0, 9);
+              return firstRowItems.map((item) => {
+                if (item.type === 'page') {
+                  return (
+                    <li key={item.id} className="relative">
+                      <Link to={item.url} className={linkClass}>{item.name}</Link>
+                    </li>
+                  );
+                }
+                if (item.type === 'category' && item.subcategories && item.subcategories.length > 0) {
+                  return (
+                    <li key={item.id} className="relative" onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)} onMouseLeave={handleMouseLeave}>
+                      <Link to={item.url} className={linkClass}>
+                        <RiArrowDropDownLine className="inline-block ml-1" /> {item.name}
+                      </Link>
+                      {openDropdown === `cat_${item.id}` && (
+                        <div 
+                          dir="rtl"
+                          className="absolute top-full right-0 mt-2 mr-[-80px] bg-[#141420] rounded-lg shadow-[0_8px_20px_rgba(31,31,44,0.3)] min-w-[560px] p-3 z-50"
+                          onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          <div className="mb-2">
+                            <h4 className="text-[#F7EC06] font-bold text-sm mb-3 pb-2 border-b-2 border-[#F7EC06] text-right">{item.name}</h4>
+                            <ul className="list-none p-0 m-0 grid grid-cols-2 gap-1">
+                              <li className="col-span-2">
+                                <Link to={item.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
                                   <span className="dropdown-yellow-bar"></span>
-                                  {subcategory.name}
+                                  عرض الكل
                                 </Link>
                               </li>
-                            ))}
-                          </ul>
+                              {item.subcategories.map((subcategory) => (
+                                <li key={subcategory.id}>
+                                  <Link to={subcategory.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
+                                    <span className="dropdown-yellow-bar"></span>
+                                    {subcategory.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </li>
-                );
-              }
-              if (item.type === 'category') {
-                return (
-                  <li key={item.id} className="relative">
-                    <Link to={item.url} className={linkClass}>{item.name}</Link>
-                  </li>
-                );
-              }
-              return null;
-            })}
+                      )}
+                    </li>
+                  );
+                }
+                if (item.type === 'category') {
+                  return (
+                    <li key={item.id} className="relative">
+                      <Link to={item.url} className={linkClass}>{item.name}</Link>
+                    </li>
+                  );
+                }
+                return null;
+              });
+            })()}
      
               </ul>
               </div>
@@ -479,6 +577,72 @@ const Navbar = memo(() => {
               </Link>
 
             </div>
+
+            {/* Second Row - New Categories (after 9th item) */}
+            {!loadingNav && navigationData.length > 9 && (
+              <div className="w-full flex justify-between items-center pt-1">
+                <div className="flex items-center gap-4">
+                  <ul className="flex items-center gap-5 list-none m-0 p-0 flex-row-reverse">
+                    {navigationData.slice(9).map((item) => {
+                      if (item.type === 'page') {
+                        return (
+                          <li key={item.id} className="relative">
+                            <Link to={item.url} className={linkClass}>{item.name}</Link>
+                          </li>
+                        );
+                      }
+                      if (item.type === 'category' && item.subcategories && item.subcategories.length > 0) {
+                        return (
+                          <li key={item.id} className="relative" onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)} onMouseLeave={handleMouseLeave}>
+                            <Link to={item.url} className={linkClass}>
+                              <RiArrowDropDownLine className="inline-block ml-1" /> {item.name}
+                            </Link>
+                            {openDropdown === `cat_${item.id}` && (
+                              <div 
+                                dir="rtl"
+                                className="absolute top-full right-0 mt-2 mr-[-80px] bg-[#141420] rounded-lg shadow-[0_8px_20px_rgba(31,31,44,0.3)] min-w-[560px] p-3 z-50"
+                                onMouseEnter={() => handleMouseEnter(`cat_${item.id}`)}
+                                onMouseLeave={handleMouseLeave}
+                              >
+                                <div className="mb-2">
+                                  <h4 className="text-[#F7EC06] font-bold text-sm mb-3 pb-2 border-b-2 border-[#F7EC06] text-right">{item.name}</h4>
+                                  <ul className="list-none p-0 m-0 grid grid-cols-2 gap-1">
+                                    <li className="col-span-2">
+                                      <Link to={item.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
+                                        <span className="dropdown-yellow-bar"></span>
+                                        عرض الكل
+                                      </Link>
+                                    </li>
+                                    {item.subcategories.map((subcategory) => (
+                                      <li key={subcategory.id}>
+                                        <Link to={subcategory.url} className="dropdown-menu-item block py-2 px-3 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:bg-[rgba(247,236,6,0.1)] hover:text-[#F7EC06] hover:pr-4 text-right relative">
+                                          <span className="dropdown-yellow-bar"></span>
+                                          {subcategory.name}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            )}
+                          </li>
+                        );
+                      }
+                      if (item.type === 'category') {
+                        return (
+                          <li key={item.id} className="relative">
+                            <Link to={item.url} className={linkClass}>{item.name}</Link>
+                          </li>
+                        );
+                      }
+                      return null;
+                    })}
+                  </ul>
+                </div>
+                {/* Empty space to align with logo above */}
+                <div style={{ width: '66px' }}></div>
+              </div>
+            )}
 
             {/* Second Row - Icons */}
             <div className="w-full flex justify-center items-center pb-1">
@@ -630,7 +794,9 @@ const Navbar = memo(() => {
         {/* Login Modal */}
         {showLoginModal && (
           <LoginModal 
-            key={`login-modal-${Date.now()}`}
+            // Keep a stable key (or no key) so that internal state like "isSignUp"
+            // is not reset on every re-render
+            key="navbar-login-modal"
             onClose={toggleLoginModal}
             onSubmit={handleEmailSubmit}
           />

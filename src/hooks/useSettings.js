@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS = Object.freeze({
     text: '',
   },
 });
-const ENDPOINTS = ['/setting', '/settings', '/home/settings', '/configuration'];
+const ENDPOINTS = ['/setting', ];
 
 let cacheState = readPersistedSettings();
 let inFlightPromise = null;
@@ -63,7 +63,17 @@ function persistSettings(data) {
 
 function normalizeSettings(response) {
   // Handle different response structures
-  const root = response?.data ?? response?.settings ?? response ?? {};
+  let root = response?.data ?? response?.settings ?? response ?? {};
+
+  // If data is in project_data_settings, parse it
+  if (response?.project_data_settings && typeof response.project_data_settings === 'string') {
+    try {
+      const projectData = JSON.parse(response.project_data_settings);
+      root = { ...root, ...projectData };
+    } catch (error) {
+      console.warn('Failed to parse project_data_settings:', error);
+    }
+  }
   
   // Extract ticker settings
   const tickerSource =
@@ -111,6 +121,18 @@ function normalizeSettings(response) {
     return DEFAULT_SETTINGS.ticker;
   })();
 
+  // Extract Firebase settings
+  const firebaseSettings = {
+    firebase_api_key: root?.firebase_api_key || null,
+    firebase_auth_domain: root?.firebase_auth_domain || null,
+    firebase_project_id: root?.firebase_project_id || null,
+    firebase_storage_bucket: root?.firebase_storage_bucket || null,
+    firebase_messaging_sender_id: root?.firebase_messaging_sender_id || null,
+    firebase_app_id: root?.firebase_app_id || null,
+    firebase_measurement_id: root?.firebase_measurement_id || null,
+    firebase_vapid_key: root?.firebase_vapid_key || null,
+  };
+
   // Return normalized settings with all social media URLs and other settings
   return {
     ...DEFAULT_SETTINGS,
@@ -119,6 +141,7 @@ function normalizeSettings(response) {
       ...DEFAULT_SETTINGS.ticker,
       ...normalizedTicker,
     },
+    ...firebaseSettings,
   };
 }
 
@@ -141,23 +164,37 @@ async function fetchSettings({ signal, force = false } = {}) {
   const request = async () => {
     let lastError;
 
+    // Try each endpoint with timeout protection
     for (const endpoint of ENDPOINTS) {
       try {
+        // Add timeout to prevent hanging requests (apiClient already has timeout, but we add extra safety)
         const data = await frontendApi.get(endpoint, {
           signal,
           skipCache: force,
+          timeout: 10000, // 10 seconds timeout per request
         });
+
         const normalized = normalizeSettings(data);
         cacheState = { data: normalized, timestamp: Date.now() };
         persistSettings(normalized);
         return normalized;
       } catch (error) {
         lastError = error;
-        // نجرب نقطة النهاية التالية
+        // If signal is aborted, stop trying
+        if (signal?.aborted || error.name === 'AbortError') {
+          throw error;
+        }
+        // Continue to next endpoint
       }
     }
 
-    throw lastError || new Error('تعذر تحميل الإعدادات');
+    // If all endpoints failed, return default settings instead of throwing
+    // This prevents the app from hanging
+    console.warn('فشل تحميل الإعدادات من جميع الـ endpoints، استخدام الإعدادات الافتراضية');
+    const defaultSettings = { ...DEFAULT_SETTINGS };
+    cacheState = { data: defaultSettings, timestamp: Date.now() };
+    persistSettings(defaultSettings);
+    return defaultSettings;
   };
 
   if (force) {
@@ -166,7 +203,14 @@ async function fetchSettings({ signal, force = false } = {}) {
 
   inFlightPromise = request()
     .catch((error) => {
-      throw error;
+      // If error occurs, return default settings to prevent app hanging
+      if (error.name === 'AbortError' || signal?.aborted) {
+        throw error;
+      }
+      console.warn('خطأ في تحميل الإعدادات:', error.message);
+      const defaultSettings = { ...DEFAULT_SETTINGS };
+      cacheState = { data: defaultSettings, timestamp: Date.now() };
+      return defaultSettings;
     })
     .finally(() => {
       inFlightPromise = null;
@@ -194,26 +238,41 @@ export function useSettings() {
     setLoading(true);
     setError(null);
 
+    // Add timeout to prevent infinite hanging
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        controller.abort();
+        setLoading(false);
+        setError(null); // Don't show error, use defaults silently
+        // Use default settings as fallback
+        setSettings(DEFAULT_SETTINGS);
+      }
+    }, 15000); // 15 seconds max wait time
+
     fetchSettings({ signal: controller.signal })
       .then((data) => {
+        clearTimeout(timeoutId);
         if (isMounted) {
           setSettings(data);
           setError(null);
+          setLoading(false);
         }
       })
       .catch((err) => {
+        clearTimeout(timeoutId);
         if (err.name === 'AbortError' || !isMounted) {
           return;
         }
-        setError(err.message || 'حدث خطأ أثناء تحميل الإعدادات');
-      })
-      .finally(() => {
+        // Don't show error if we have default settings
         if (isMounted) {
+          setError(null); // Don't show error to user, use defaults silently
+          setSettings(DEFAULT_SETTINGS);
           setLoading(false);
         }
       });
 
     return () => {
+      clearTimeout(timeoutId);
       isMounted = false;
       controller.abort();
       if (abortControllerRef.current === controller) {
@@ -247,12 +306,26 @@ export function useSettings() {
     }
   }, []);
 
+  // Function to clear cache
+  const clearCache = useCallback(() => {
+    cacheState = { data: null, timestamp: 0 };
+    inFlightPromise = null;
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch (error) {
+        console.warn('Failed to clear settings cache:', error);
+      }
+    }
+  }, []);
+
   return {
     settings,
     ticker: settings.ticker,
     loading,
     error,
     refresh,
+    clearCache,
     updatedAt: cacheState.timestamp || null,
   };
 }

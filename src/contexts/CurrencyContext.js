@@ -40,7 +40,7 @@ export const CurrencyProvider = ({ children }) => {
         }
 
         // Fetch countries from API
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://storage-te.com/backend/api/v1';
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://storage-te.com/backend/api/frontend';
         const countriesResponse = await fetch(`${API_BASE_URL}/countries`, {
           method: 'GET',
           headers: {
