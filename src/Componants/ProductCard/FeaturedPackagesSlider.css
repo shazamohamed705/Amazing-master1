@@ -102,6 +102,14 @@
   overflow: hidden;
   position: relative;
   max-width: 80rem;
+  cursor: grab;
+  touch-action: pan-y; /* Allow vertical scrolling but prevent horizontal scroll conflicts */
+  transition: transform 0.2s ease;
+}
+
+.featured-packages-slider:active {
+  cursor: grabbing;
+  transform: scale(0.98);
 }
 
 .featured-packages-card-wrapper {

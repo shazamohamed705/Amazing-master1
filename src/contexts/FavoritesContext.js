@@ -2,7 +2,8 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from '
 
 const FavoritesContext = createContext(null);
 
-const API_BASE_URL = 'https://storage-te.com/backend/api/v1';
+const API_BASE_URL = 'https://storage-te.com/backend/api';
+const FRONTEND_API_BASE_URL = 'https://storage-te.com/backend/api/frontend';
 
 export const FavoritesProvider = ({ children }) => {
   const [favoriteIds, setFavoriteIds] = useState(() => {
@@ -64,14 +65,15 @@ export const FavoritesProvider = ({ children }) => {
         'Accept': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       };
-      
-      // استخدام PATCH method مع item_id و type
-      const response = await fetch(`${API_BASE_URL}/fav`, {
-        method: 'PATCH',
+
+      // استخدام POST method مع /frontend/wishlist
+      const response = await fetch(`${FRONTEND_API_BASE_URL}/wishlist`, {
+        method: 'POST',
         headers,
-        body: JSON.stringify({ 
-          item_id: id,
-          type: type // 'package' or 'service'
+        body: JSON.stringify({
+          package_id: id,
+          type: type, // 'package' or 'service'
+          action: wasFav ? 'remove' : 'add' // تحديد الإجراء المطلوب
         })
       });
       

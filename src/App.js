@@ -34,6 +34,7 @@ import WhyChooseUs2 from './Componants/WhyChooseUs2/WhyChooseUs2';
 import AllReviews from './Componants/AllReviews/AllReviews';
 import Cart from './Componants/Cart/Cart';
 import Checkout from './Componants/Checkout/Checkout';
+import Wishlist from './Componants/Wishlist/Wishlist';
 import BottomNavbar from './Componants/BottomNavbar/BottomNavbar';
 import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
@@ -92,6 +93,7 @@ function App() {
             <Route path="/about" element={<PageAbout />} />
             <Route path="/notifications" element={<PageNotifications />} />
             <Route path="/orders" element={<PageOrders />} />
+            <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/pending-payments" element={<PagePendingPayments />} />
             <Route path="/countries" element={<PageCountries />} />
             <Route path="/currencies" element={<PageCurrencies />} />
