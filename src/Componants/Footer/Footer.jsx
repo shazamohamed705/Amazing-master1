@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { MdWhatsapp, MdOutlineMailOutline } from "react-icons/md";
 import { BsTelephone } from "react-icons/bs";
 import { FaMobileScreen, FaThreads } from "react-icons/fa6";
-import { FaInstagram, FaFacebookF, FaTiktok, FaSnapchat, FaYoutube, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaTiktok, FaSnapchat, FaLink, FaTwitter, FaYoutube, FaLinkedin } from "react-icons/fa";
 import { HiLink } from "react-icons/hi";
 import { useSettings } from '../../hooks/useSettings';
 import './Footer.css';
@@ -78,7 +78,14 @@ const formatSocialUrl = (url) => {
 };
 
 const Footer = memo(() => {
-  const { settings } = useSettings();
+  const { settings, refresh } = useSettings();
+  console.log('settings', settings);
+
+  // Force refresh settings on mount
+  React.useEffect(() => {
+    refresh();
+  }, [refresh]);
+
   const [footerPages, setFooterPages] = useState([]);
 
   useEffect(() => {
@@ -107,38 +114,39 @@ const Footer = memo(() => {
   // Memoize contact information from settings
   const contactInfo = useMemo(() => {
     const phone = settings?.contact_phone || settings?.site_phone || '';
-    const whatsapp = settings?.contact_whatsapp || '01111111111';
-    const email = settings?.contact_email || settings?.site_email || 'tt@GMAIL.COM';
+    const whatsapp = settings?.contact_whatsapp || '';
+    const email = settings?.contact_email || settings?.site_email || '';
 
     return {
       phone: phone ? formatPhoneUrl(phone) : null,
-      phoneDisplay: phone || null,
+      phoneDisplay: phone || '',
       whatsapp: whatsapp ? formatWhatsAppUrl(whatsapp) : null,
-      whatsappDisplay: whatsapp || null,
+      whatsappDisplay: whatsapp || '',
       email: email ? formatEmailUrl(email) : null,
-      emailDisplay: email || null,
+      emailDisplay: email || '',
     };
   }, [settings]);
 
-  // Memoize social media links from settings - get from API with fallbacks for demo
+  // Memoize social media links from settings - get directly from API without fallbacks
   const socialLinks = useMemo(() => {
-    // Get URLs from settings API response, but provide fallbacks for demo
-    const instagramUrl = formatSocialUrl(settings?.instagram_url) || 'https://instagram.com/storage';
-    const facebookUrl = formatSocialUrl(settings?.facebook_url) || 'https://facebook.com/storage';
-    const tiktokUrl = formatSocialUrl(settings?.tiktok_url) || 'https://tiktok.com/@storage';
-    const snapchatUrl = formatSocialUrl(settings?.snapchat_url) || 'https://snapchat.com/add/storage';
-    const twitterUrl = formatSocialUrl(settings?.twitter_url) || 'https://twitter.com/storage';
-    const youtubeUrl = formatSocialUrl(settings?.youtube_url) || 'https://youtube.com/storage';
-    const linkedinUrl = formatSocialUrl(settings?.linkedin_url) || 'https://linkedin.com/company/storage';
+    // Get URLs directly from settings API response
+    const instagramUrl = formatSocialUrl(settings?.instagram_url);
+    const facebookUrl = formatSocialUrl(settings?.facebook_url);
+    const tiktokUrl = formatSocialUrl(settings?.tiktok_url);
+    const snapchatUrl = formatSocialUrl(settings?.snapchat_url);
+    const twitterUrl = formatSocialUrl(settings?.twitter_url);
+    const youtubeUrl = formatSocialUrl(settings?.youtube_url);
+    const linkedinUrl = formatSocialUrl(settings?.linkedin_url);
 
+    // Only return valid URLs from API, no fallback URLs
     return {
-      instagram: { url: instagramUrl, hasValidUrl: true },
-      facebook: { url: facebookUrl, hasValidUrl: true },
-      tiktok: { url: tiktokUrl, hasValidUrl: true },
-      snapchat: { url: snapchatUrl, hasValidUrl: true },
-      twitter: { url: twitterUrl, hasValidUrl: true },
-      youtube: { url: youtubeUrl, hasValidUrl: true },
-      linkedin: { url: linkedinUrl, hasValidUrl: true },
+      instagram: { url: instagramUrl, hasValidUrl: Boolean(instagramUrl) },
+      facebook: { url: facebookUrl, hasValidUrl: Boolean(facebookUrl) },
+      tiktok: { url: tiktokUrl, hasValidUrl: Boolean(tiktokUrl) },
+      snapchat: { url: snapchatUrl, hasValidUrl: Boolean(snapchatUrl) },
+      twitter: { url: twitterUrl, hasValidUrl: Boolean(twitterUrl) },
+      youtube: { url: youtubeUrl, hasValidUrl: Boolean(youtubeUrl) },
+      linkedin: { url: linkedinUrl, hasValidUrl: Boolean(linkedinUrl) },
     };
   }, [settings]);
   return (
@@ -219,7 +227,7 @@ const Footer = memo(() => {
                   rel="noopener noreferrer"
                   aria-label="Twitter"
                 >
-                  <FaTwitter />
+                  <FaLink />
                 </a>
               )}
               {socialLinks.youtube.hasValidUrl && (
@@ -230,7 +238,7 @@ const Footer = memo(() => {
                   rel="noopener noreferrer"
                   aria-label="YouTube"
                 >
-                  <FaYoutube />
+                  <FaLink />
                 </a>
               )}
               {socialLinks.linkedin.hasValidUrl && (
@@ -241,7 +249,7 @@ const Footer = memo(() => {
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
                 >
-                  <FaLinkedin />
+                  <FaLink />
                 </a>
               )}
             </div>

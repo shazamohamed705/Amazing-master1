@@ -24,7 +24,7 @@ const getCached = (key) => {
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Improved retry logic with better error handling
-const retryRequest = async (fn, retries = 3, delay = 1000) => {
+const retryRequest = async (fn, retries = 5, delay = 2000) => {
   let lastError;
   for (let i = 0; i < retries; i++) {
     try {
@@ -73,7 +73,7 @@ const setCache = (key, data) => {
 // Helper function to create fetch request with proper error handling
 const createFetchRequest = async (url, method, body, options, baseUrl) => {
   const controller = new AbortController();
-  const timeout = options.timeout || 30000;
+  const timeout = options.timeout || 60000;
   let timeoutId = null;
   
   // Set up timeout

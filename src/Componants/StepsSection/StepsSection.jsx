@@ -10,38 +10,21 @@ const iconMap = {
 };
 
 const StepsSection = memo(() => {
-  const [steps, setSteps] = useState([
-    {
-      id: 1,
-      Icon: FiShoppingBag,
-      title: 'ابدأ بحساب جاهز ويوزر حصري',
-      description: 'اختر من مجموعة حساباتنا ويوزراتنا الحصرية وخلّك مميز من أول خطوة'
-    },
-    {
-      id: 2,
-      Icon: FiUsers,
-      title: 'اطلب متابعين فعليين و حقيقيين',
-      description: 'نرفع عدد متابعينك بأساليب آمنة وجمهور مهتم فعلاً'
-    },
-    {
-      id: 3,
-      Icon: FiCheckCircle,
-      title: 'وثّق حسابك وخلّ حضورك أقوى',
-      description: 'نساعدك في خطوات التوثيق ونقوّي ثقة جمهورك فيك'
-    }
-  ]);
+  const [steps, setSteps] = useState([]);
 
   useEffect(() => {
     const loadSteps = async () => {
       try {
         const response = await frontendApi.get('/home');
+
         if (response.success && response.data?.steps) {
           const apiSteps = response.data.steps.map((step, index) => ({
             id: step.id || index + 1,
             Icon: iconMap[step.icon] || FiShoppingBag,
-            title: step.title,
-            description: step.description,
+            title: step.title || `خطوة ${index + 1}`,
+            description: step.description || 'وصف الخطوة',
           }));
+
           if (apiSteps.length > 0) {
             setSteps(apiSteps);
           }
@@ -56,11 +39,6 @@ const StepsSection = memo(() => {
   return (
     <section className="steps-section">
       <div className="steps-container">
-        <div className="steps-header-section">
-          <h2 className="steps-title">خدماتنا لين تصل</h2>
-          <div className="steps-underline" />
-        </div>
-        <p className="steps-subtitle">ثلاث خطوات بسيطة للحصول على خدماتك</p>
         
         <div className="steps-wrapper">
           {steps.map((step, index) => (
