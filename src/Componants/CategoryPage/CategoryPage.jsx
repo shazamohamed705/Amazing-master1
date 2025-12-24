@@ -304,6 +304,7 @@ const CategoryPage = () => {
             </div>
           )}
           <h1 className="category-title">{category.name}</h1>
+          <div className="category-title-underline"></div>
           {category.description && (
             <p className="category-description">{category.description}</p>
           )}

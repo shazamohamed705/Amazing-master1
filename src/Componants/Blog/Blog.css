@@ -150,12 +150,56 @@
   display: none !important; /* إلغاء الخط الثابت أسفل العنوان */
 }
 
+
+.blog__title {
+  position: relative;
+}
+
+.blog__underline {
+  content: '';
+  display: block;
+  width: 150px;
+  height: 5px;
+  background: #F7EC06;
+  margin: 12px auto 0;
+  border-radius: 999px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(247, 236, 6, 0.3);
+  overflow: visible;
+}
+
+.blog__underline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #F7EC06;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(247, 236, 6, 0.6);
+  animation: blog-underline-ball 2.2s ease-in-out infinite;
+}
+
 @keyframes slideUnderline {
   0%, 100% {
     background-position: 0% 50%;
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes blog-underline-ball {
+  0% {
+    left: 0%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
   }
 }
 
@@ -204,16 +248,14 @@
     margin-bottom: 0.8rem;
   }
 
-  .blog__title::after {
-    content: '';
-    display: block;
-    width: 100px;
+  .blog__underline {
+    width: 120px;
     height: 4px;
-    margin: 8px auto 0;
-    background: linear-gradient(90deg, transparent, #F7EC06, transparent);
-    border-radius: 2px;
-    background-size: 200% 100%;
-    animation: slideUnderline 2s ease-in-out infinite;
+  }
+
+  .blog__underline::before {
+    width: 10px;
+    height: 10px;
   }
 
   .blog__grid--cards {
@@ -585,9 +627,14 @@
     font-size: 2rem;
   }
 
-  .blog__title::after {
-    width: 80px;
+  .blog__underline {
+    width: 100px;
     height: 3px;
+  }
+
+  .blog__underline::before {
+    width: 8px;
+    height: 8px;
   }
 
   .blog__grid {
@@ -693,9 +740,14 @@
     font-size: 1.6rem;
   }
 
-  .blog__title::after {
-    width: 70px;
+  .blog__underline {
+    width: 80px;
     height: 3px;
+  }
+
+  .blog__underline::before {
+    width: 6px;
+    height: 6px;
   }
 
   .blog__grid {
@@ -803,8 +855,14 @@
     font-size: 1.4rem;
   }
 
-  .blog__title::after {
-    width: 60px;
+  .blog__underline {
+    width: 70px;
+    height: 3px;
+  }
+
+  .blog__underline::before {
+    width: 5px;
+    height: 5px;
   }
 
   .blog__grid {

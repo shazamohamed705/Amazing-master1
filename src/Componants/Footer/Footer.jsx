@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MdWhatsapp, MdOutlineMailOutline } from "react-icons/md";
 import { BsTelephone } from "react-icons/bs";
-import { FaMobileScreen, FaThreads } from "react-icons/fa6";
+import { FaMobileScreen } from "react-icons/fa6";
 import { FaInstagram, FaFacebookF, FaTiktok, FaSnapchat, FaLink, FaTwitter, FaYoutube, FaLinkedin } from "react-icons/fa";
 import { HiLink } from "react-icons/hi";
 import { useSettings } from '../../hooks/useSettings';
@@ -79,7 +79,9 @@ const formatSocialUrl = (url) => {
 
 const Footer = memo(() => {
   const { settings, refresh } = useSettings();
-  console.log('settings', settings);
+
+  // Debug: Log settings
+  console.log('Footer settings:', settings);
 
   // Force refresh settings on mount
   React.useEffect(() => {
@@ -91,6 +93,7 @@ const Footer = memo(() => {
   useEffect(() => {
     const fetchFooterPages = async () => {
       try {
+        console.log('Fetching footer pages from:', `${API_BASE_URL}/pages?section=footer&status=true`);
         const response = await fetch(`${API_BASE_URL}/pages?section=footer&status=true`, {
           method: 'GET',
           headers: {
@@ -99,9 +102,13 @@ const Footer = memo(() => {
           },
         });
 
+        console.log('Footer pages response:', response);
         const data = await response.json();
+        console.log('Footer pages data:', data);
+
         if (response.ok && data.success) {
           setFooterPages(data.data || []);
+          console.log('Footer pages set:', data.data || []);
         }
       } catch (error) {
         console.error('Error fetching footer pages:', error);
@@ -127,26 +134,25 @@ const Footer = memo(() => {
     };
   }, [settings]);
 
-  // Memoize social media links from settings - get directly from API without fallbacks
+  // Memoize social media links from settings - show main platforms always
   const socialLinks = useMemo(() => {
-    // Get URLs directly from settings API response
-    const instagramUrl = formatSocialUrl(settings?.instagram_url);
-    const facebookUrl = formatSocialUrl(settings?.facebook_url);
-    const tiktokUrl = formatSocialUrl(settings?.tiktok_url);
-    const snapchatUrl = formatSocialUrl(settings?.snapchat_url);
-    const twitterUrl = formatSocialUrl(settings?.twitter_url);
-    const youtubeUrl = formatSocialUrl(settings?.youtube_url);
-    const linkedinUrl = formatSocialUrl(settings?.linkedin_url);
+    // Get URLs directly from settings API response, but show main platforms always
+    const instagramUrl = settings?.instagram_url || 'https://instagram.com/storage';
+    const facebookUrl = settings?.facebook_url || 'https://facebook.com/storage';
+    const tiktokUrl = settings?.tiktok_url || null;
+    const snapchatUrl = settings?.snapchat_url || null;
+    const twitterUrl = settings?.twitter_url || 'https://twitter.com/storage';
+    const youtubeUrl = settings?.youtube_url || 'https://youtube.com/@storage';
+    const linkedinUrl = settings?.linkedin_url || 'https://linkedin.com/company/storage';
 
-    // Only return valid URLs from API, no fallback URLs
     return {
-      instagram: { url: instagramUrl, hasValidUrl: Boolean(instagramUrl) },
-      facebook: { url: facebookUrl, hasValidUrl: Boolean(facebookUrl) },
+      instagram: { url: instagramUrl, hasValidUrl: true },
+      facebook: { url: facebookUrl, hasValidUrl: true },
+      twitter: { url: twitterUrl, hasValidUrl: true },
+      youtube: { url: youtubeUrl, hasValidUrl: true },
+      linkedin: { url: linkedinUrl, hasValidUrl: true },
       tiktok: { url: tiktokUrl, hasValidUrl: Boolean(tiktokUrl) },
       snapchat: { url: snapchatUrl, hasValidUrl: Boolean(snapchatUrl) },
-      twitter: { url: twitterUrl, hasValidUrl: Boolean(twitterUrl) },
-      youtube: { url: youtubeUrl, hasValidUrl: Boolean(youtubeUrl) },
-      linkedin: { url: linkedinUrl, hasValidUrl: Boolean(linkedinUrl) },
     };
   }, [settings]);
   return (
@@ -168,8 +174,14 @@ const Footer = memo(() => {
                 </Link>
               </div>
               <p className="footer__tagline">
-                <span className="footer__tagline-line">متجر Storage يقدم حلول السوشيال ميديا المتكاملة لرفع تفاعل حساباتك وتعزيز حضورك الرقمي.</span>
-                <span className="footer__tagline-line">Think Code, Think Storage — حملات ذكية، نتائج دقيقة، ودعم متواصل لنمو أعمالك.</span>
+                {settings?.site_description ? (
+                  <span className="footer__tagline-line">{settings.site_description}</span>
+                ) : (
+                  <>
+                    <span className="footer__tagline-line">متجر Storage يقدم حلول السوشيال ميديا المتكاملة لرفع تفاعل حساباتك وتعزيز حضورك الرقمي.</span>
+                    <span className="footer__tagline-line">Think Code, Think Storage — حملات ذكية، نتائج دقيقة، ودعم متواصل لنمو أعمالك.</span>
+                  </>
+                )}
               </p>
             </div>
             
@@ -187,14 +199,47 @@ const Footer = memo(() => {
                 </a>
               )}
               {socialLinks.facebook.hasValidUrl && (
-                <a 
-                  href={socialLinks.facebook.url} 
-                  className="footer__social-link" 
+                <a
+                  href={socialLinks.facebook.url}
+                  className="footer__social-link"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
                 >
                   <FaFacebookF />
+                </a>
+              )}
+              {socialLinks.twitter.hasValidUrl && (
+                <a
+                  href={socialLinks.twitter.url}
+                  className="footer__social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter"
+                >
+                  <FaTwitter />
+                </a>
+              )}
+              {socialLinks.youtube.hasValidUrl && (
+                <a
+                  href={socialLinks.youtube.url}
+                  className="footer__social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                >
+                  <FaYoutube />
+                </a>
+              )}
+              {socialLinks.linkedin.hasValidUrl && (
+                <a
+                  href={socialLinks.linkedin.url}
+                  className="footer__social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <FaLinkedin />
                 </a>
               )}
               {socialLinks.tiktok.hasValidUrl && (
@@ -217,39 +262,6 @@ const Footer = memo(() => {
                   aria-label="Snapchat"
                 >
                   <FaSnapchat />
-                </a>
-              )}
-              {socialLinks.twitter.hasValidUrl && (
-                <a
-                  href={socialLinks.twitter.url}
-                  className="footer__social-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter"
-                >
-                  <FaLink />
-                </a>
-              )}
-              {socialLinks.youtube.hasValidUrl && (
-                <a
-                  href={socialLinks.youtube.url}
-                  className="footer__social-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="YouTube"
-                >
-                  <FaLink />
-                </a>
-              )}
-              {socialLinks.linkedin.hasValidUrl && (
-                <a
-                  href={socialLinks.linkedin.url}
-                  className="footer__social-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                >
-                  <FaLink />
                 </a>
               )}
             </div>

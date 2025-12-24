@@ -843,8 +843,8 @@ const Navbar = memo(() => {
                       className="w-full flex items-center justify-between py-3 px-3 text-white text-sm font-semibold transition-all duration-300 hover:text-[#F7EC06] hover:bg-[rgba(247,236,6,0.1)] rounded-md bg-transparent border-none cursor-pointer text-right"
                       onClick={() => toggleMobileDropdown(`cat_${item.id}`)}
                     >
-                      <RiArrowDropDownLine className={`text-xl transition-transform duration-300 ${mobileDropdown === `cat_${item.id}` ? 'rotate-180' : ''}`} />
                       <span>{item.name}</span>
+                      <RiArrowDropDownLine className={`text-xl transition-transform duration-300 ${mobileDropdown === `cat_${item.id}` ? 'rotate-180' : ''}`} />
                     </button>
                     <div className={`overflow-hidden transition-all duration-300 ${mobileDropdown === `cat_${item.id}` ? 'max-h-[500px]' : 'max-h-0'}`}>
                       <ul className="list-none p-0 m-0 bg-[rgba(255,107,53,0.05)] rounded-md mr-4 mb-2">
@@ -904,8 +904,8 @@ const Navbar = memo(() => {
                       className="w-full flex items-center justify-between py-3 px-3 text-white text-sm font-semibold transition-all duration-300 hover:text-[#F7EC06] hover:bg-[rgba(247,236,6,0.1)] rounded-md bg-transparent border-none cursor-pointer text-right"
                       onClick={() => toggleMobileDropdown(`cat_${item.id}`)}
                     >
-                      <RiArrowDropDownLine className={`text-xl transition-transform duration-300 ${mobileDropdown === `cat_${item.id}` ? 'rotate-180' : ''}`} />
                       <span>{item.name}</span>
+                      <RiArrowDropDownLine className={`text-xl transition-transform duration-300 ${mobileDropdown === `cat_${item.id}` ? 'rotate-180' : ''}`} />
                     </button>
                     <div className={`overflow-hidden transition-all duration-300 ${mobileDropdown === `cat_${item.id}` ? 'max-h-[500px]' : 'max-h-0'}`}>
                       <ul className="list-none p-0 m-0 bg-[rgba(255,107,53,0.05)] rounded-md mr-4 mb-2">

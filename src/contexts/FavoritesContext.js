@@ -65,12 +65,12 @@ export const FavoritesProvider = ({ children }) => {
         'Accept': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       };
-
+      
       // استخدام POST method مع /frontend/wishlist
       const response = await fetch(`${FRONTEND_API_BASE_URL}/wishlist`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
+        body: JSON.stringify({ 
           package_id: id,
           type: type, // 'package' or 'service'
           action: wasFav ? 'remove' : 'add' // تحديد الإجراء المطلوب

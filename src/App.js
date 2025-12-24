@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import FeaturedPackagesSlider from './Componants/ProductCard/FeaturedPackagesSlider';
 import Navbar from './Componants/Navbar/Navbar';
 import CustomCursor from './Componants/CustomCursor/CustomCursor';
@@ -36,6 +36,7 @@ import Cart from './Componants/Cart/Cart';
 import Checkout from './Componants/Checkout/Checkout';
 import Wishlist from './Componants/Wishlist/Wishlist';
 import BottomNavbar from './Componants/BottomNavbar/BottomNavbar';
+import MetaTagsManager from './Componants/MetaTags/MetaTagsManager';
 import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ToastProvider, useToast } from './contexts/ToastContext';
@@ -58,7 +59,9 @@ function App() {
   const { ticker } = useSettings();
   // Initialize notifications
   useNotifications();
-  
+  const location = useLocation();
+  const isServicePackagesPage = location.pathname.includes('/service/');
+
   return (
     <ErrorBoundary>
       <ToastProvider>
@@ -66,6 +69,7 @@ function App() {
           <CartProvider>
             <FavoritesProvider>
             <div className="App">
+        <MetaTagsManager />
         <CustomCursor />
         {ticker?.enabled && ticker?.text && (
           <div style={{
@@ -127,7 +131,7 @@ function App() {
         </main>
         <WhatsAppButton />
         <Footer />
-        <BottomNavbar />
+        {!isServicePackagesPage && <BottomNavbar />}
           </div>
             </FavoritesProvider>
           </CartProvider>

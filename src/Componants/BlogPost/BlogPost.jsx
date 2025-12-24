@@ -67,6 +67,7 @@ const BlogPost = memo(() => {
         <div className="blog-post__content-wrapper">
           <div className="blog-post__main">
             <h2 className="blog-post__title">{article?.title || ''}</h2>
+            <div className="blog-post-title-underline"></div>
 
             {/* Article Meta Information */}
             <div style={{ 

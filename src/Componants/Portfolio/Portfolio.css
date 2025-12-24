@@ -1,4 +1,4 @@
-/* =========================
+﻿/* =========================
    Portfolio Layout
 ========================= */
 .portfolio {
@@ -20,6 +20,46 @@
   font-weight: 700;
   color: #fff;
   margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.portfolio__title-underline {
+  content: '';
+  display: block;
+  width: 150px;
+  height: 5px;
+  background: #F7EC06;
+  margin: 12px auto 0;
+  border-radius: 999px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(247, 236, 6, 0.3);
+  overflow: visible;
+}
+
+.portfolio__title-underline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #F7EC06;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(247, 236, 6, 0.6);
+  animation: portfolio-underline-ball 2.2s ease-in-out infinite;
+}
+
+@keyframes portfolio-underline-ball {
+  0% {
+    left: 0%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 0%;
+  }
 }
 
 
@@ -138,16 +178,17 @@
 
 @media (max-width: 768px) {
   .portfolio {
-    padding-top: 140px;
+    padding-top: 100px;
     box-sizing: border-box;
     overflow-x: hidden;
 
   }
 
+
   .portfolio__grid--cards {
     grid-template-columns: 1fr;
     max-width: 100%;
-    padding: 0 1rem;
+    padding: 0 0.05rem 0 2.5rem;
   }
 
   .portfolio__card {
@@ -171,6 +212,42 @@
     align-items: center;     /* ✨ يوسّط العناصر */
     text-align: center;      /* ✨ يوسّط النص */
   }
-
-
 }
+
+/* Responsive underline animation */
+@media (max-width: 768px) {
+  .portfolio__title-underline {
+    width: 120px;
+    height: 4px;
+  }
+
+  .portfolio__title-underline::before {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio__title-underline {
+    width: 100px;
+    height: 3px;
+  }
+
+  .portfolio__title-underline::before {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .portfolio__title-underline {
+    width: 80px;
+    height: 3px;
+  }
+
+  .portfolio__title-underline::before {
+    width: 6px;
+    height: 6px;
+  }
+}
+

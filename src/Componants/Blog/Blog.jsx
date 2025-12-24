@@ -65,7 +65,7 @@ const Blog = memo(() => {
     <div className="blog" dir="rtl">
       <div className="blog__header">
         <h1 className="blog__title">المدونة</h1>
-        <div className="blog__title-underline"></div>
+        <div className="blog__underline"></div>
       </div>
 
       {loading && (

@@ -349,7 +349,7 @@ const ServicePackages = () => {
 
   if (loading) {
     return (
-      <div className="service-packages-page" dir="rtl">
+      <div className="service-packages-page" dir="ltr">
         <div className="service-packages-container">
           <div style={{ textAlign: 'center', padding: '3rem', color: 'white' }}>
             جاري التحميل...
@@ -361,7 +361,7 @@ const ServicePackages = () => {
 
   if (!service) {
     return (
-      <div className="service-packages-page" dir="rtl">
+      <div className="service-packages-page" dir="ltr">
         <div className="service-packages-container">
           <div style={{ textAlign: 'center', padding: '3rem', color: 'white' }}>
             الخدمة غير موجودة

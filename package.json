@@ -9,19 +9,19 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^6.12.6",
     "ajv-keywords": "^3.5.2",
+    "firebase": "^10.13.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-helmet-async": "^2.0.5",
     "react-icons": "^5.5.0",
     "react-phone-number-input": "^3.4.14",
     "react-router-dom": "^6.30.1",
     "react-scripts": "^5.0.1",
     "schema-utils": "^2.7.1",
-    "web-vitals": "^2.1.4",
-    "firebase": "^10.13.2"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "cross-env HOST=0.0.0.0 react-scripts start",
-
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

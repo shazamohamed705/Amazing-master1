@@ -2,6 +2,25 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useSettings } from './useSettings';
 import { initializeFirebase, requestNotificationPermission, onMessageListener } from '../services/firebase';
 
+// Notification sound URL
+const NOTIFICATION_SOUND_URL = 'https://storage-te.com/backend/storage/app/public/settings/sounds/cULGUWCR2ie7ku1ay5jaWKsmJe2XuPElfstBkpAs.mp3';
+
+// Play notification sound
+const playNotificationSound = async () => {
+  try {
+    // Create audio instance with preload for better performance
+    const audio = new Audio(NOTIFICATION_SOUND_URL);
+    audio.preload = 'auto';
+    audio.volume = 0.7; // Set reasonable volume
+
+    // Play the sound
+    await audio.play();
+  } catch (error) {
+    console.warn('Failed to play notification sound:', error);
+    // Some browsers block autoplay, this is expected
+  }
+};
+
 const TOKEN_STORAGE_KEY = 'fcm_token';
 const NOTIFICATIONS_STORAGE_KEY = 'notifications_list';
 const NOTIFICATIONS_ENABLED_KEY = 'notifications_enabled';
@@ -146,6 +165,11 @@ export const useNotifications = () => {
                 console.warn('Error showing notification:', notifError);
               }
             }
+
+            // Play notification sound if notifications are enabled
+            if (notificationsEnabledRef.current) {
+              playNotificationSound();
+            }
           });
         }
       } catch (err) {
@@ -236,6 +260,11 @@ export const useNotifications = () => {
     const newState = !notificationsEnabled;
     setNotificationsEnabled(newState);
     localStorage.setItem(NOTIFICATIONS_ENABLED_KEY, newState.toString());
+
+    // Play sound when enabling notifications as confirmation
+    if (newState) {
+      playNotificationSound();
+    }
   }, [notificationsEnabled]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;

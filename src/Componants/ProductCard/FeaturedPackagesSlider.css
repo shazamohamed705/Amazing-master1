@@ -289,3 +289,9 @@
     margin: 0 !important;
   }
 }
+/* 🚫 HIDE SLIDER ARROWS ON MOBILE */
+@media (max-width: 768px) {
+  .featured-packages-nav-btn {
+    display: none !important;
+  }
+}

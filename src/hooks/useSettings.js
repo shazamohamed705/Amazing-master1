@@ -133,10 +133,20 @@ function normalizeSettings(response) {
     firebase_vapid_key: root?.firebase_vapid_key || null,
   };
 
-  // Return normalized settings with all social media URLs and other settings
+  // Return normalized settings with all social media URLs and other settings (excluding meta tags)
+  const {
+    meta_title,
+    meta_description,
+    meta_keywords,
+    google_analytics_id,
+    google_tag_manager_id,
+    facebook_pixel_id,
+    ...settingsWithoutMeta
+  } = root;
+
   return {
     ...DEFAULT_SETTINGS,
-    ...root,
+    ...settingsWithoutMeta,
     ticker: {
       ...DEFAULT_SETTINGS.ticker,
       ...normalizedTicker,

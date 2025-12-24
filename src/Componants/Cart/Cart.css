@@ -574,7 +574,7 @@
 
 @media (max-width: 768px) {
   .cart-page {
-    padding: 1.5rem 1rem;
+    padding: 0.05rem 0.5rem 1rem 3.5rem;
     align-items: center;
   }
 

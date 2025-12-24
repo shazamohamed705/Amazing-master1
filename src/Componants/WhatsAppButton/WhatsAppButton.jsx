@@ -1,12 +1,17 @@
 import React from 'react';
+import { useSettings } from '../../hooks/useSettings';
 import './WhatsAppButton.css';
 
 const WhatsAppButton = () => {
+  const { settings } = useSettings();
+
   const handleClick = () => {
-    // Replace with your WhatsApp number (include country code without + or 00)
-    const phoneNumber = '966500000000'; // Example: Saudi Arabia number
+    // Get WhatsApp number from settings or use default
+    const phoneNumber = settings?.contact_whatsapp || '966500000000';
+    // Clean the phone number (remove spaces, dashes, etc.)
+    const cleanedNumber = phoneNumber.replace(/\D/g, '');
     const message = 'مرحباً، أريد الاستفسار عن خدماتكم';
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${cleanedNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
